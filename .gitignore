@@ -1,5 +1,5 @@
-node_modules/
+BACKEND/node_modules/
 
-/backend/uploads/*
-!/backend/uploads/.gitkeep  
+BACKEND/uploads/*
+!/BACKEND/uploads/.gitkeep  
 
