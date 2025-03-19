@@ -1,2 +1,6 @@
 FRONTEND/node_modules/
 BACKEND/node_modules/
+
+/BACKEND/uploads/*
+!/BACKEND/uploads/.gitkeep  
+
