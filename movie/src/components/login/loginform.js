@@ -1,8 +1,7 @@
-import {Component} from 'react'
-import Cookies from 'js-cookie'
-import {Redirect} from 'react-router-dom'
-
-import './login.css'
+import { Component } from 'react';
+import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
+import './login.css';
 
 class LoginForm extends Component {
   state = {
@@ -10,33 +9,32 @@ class LoginForm extends Component {
     password: '',
     showSubmitError: false,
     errorMsg: '',
-  }
+  };
 
-  onChangeUsername = event => {
-    this.setState({username: event.target.value})
-  }
+  onChangeUsername = (event) => {
+    this.setState({ username: event.target.value });
+  };
 
-  onChangePassword = event => {
-    this.setState({password: event.target.value})
-  }
+  onChangePassword = (event) => {
+    this.setState({ password: event.target.value });
+  };
 
-  onSubmitSuccess = jwtToken => {
-    const {history} = this.props
+  onSubmitSuccess = (jwtToken) => {
+    Cookies.set('jwt_token', jwtToken, { expires: 30 });
 
-    Cookies.set('jwt_token', jwtToken, {
-      expires: 30,
-    })
-    history.replace('/')
-  }
+    // Redirect to home page
+    this.props.navigate('/home');
+  };
 
-  onSubmitFailure = errorMsg => {
-    this.setState({showSubmitError: true, errorMsg})
-  }
+  onSubmitFailure = (errorMsg) => {
+    this.setState({ showSubmitError: true, errorMsg });
+  };
 
-  submitForm = async event => {
+  submitForm = async (event) => {
     event.preventDefault();
     const { username, password } = this.state;
-    const email=username;
+    const email = username;
+
     try {
       const response = await fetch('http://localhost:5002/login', {
         method: 'POST',
@@ -44,26 +42,26 @@ class LoginForm extends Component {
         body: JSON.stringify({ email, password }),
         credentials: 'include', // Important for session authentication
       });
-  
+
       const data = await response.json();
       console.log(data);
+
       if (!response.ok) {
         throw new Error(data.message || 'Invalid credentials');
       }
-      
-  
-      // Save session data (if using local storage or context API)
+
+      // Save session data
       localStorage.setItem('user', JSON.stringify(data.user));
-      
-      alert('Login successful!');
+
+      //alert('Login successful!');
+      this.onSubmitSuccess(data.token);
     } catch (error) {
       this.setState({ showSubmitError: true, errorMsg: error.message });
     }
   };
-  
 
   renderPasswordField = () => {
-    const {password} = this.state
+    const { password } = this.state;
     return (
       <>
         <label className="input-label" htmlFor="password">
@@ -77,11 +75,11 @@ class LoginForm extends Component {
           onChange={this.onChangePassword}
         />
       </>
-    )
-  }
+    );
+  };
 
   renderUsernameField = () => {
-    const {username} = this.state
+    const { username } = this.state;
     return (
       <>
         <label className="input-label" htmlFor="username">
@@ -95,18 +93,15 @@ class LoginForm extends Component {
           onChange={this.onChangeUsername}
         />
       </>
-    )
-  }
+    );
+  };
 
   render() {
-    const {showSubmitError, errorMsg} = this.state
+    const { showSubmitError, errorMsg } = this.state;
     return (
       <div className="login-form-container">
         <img src="/vijay.png" alt="My Image" />
-
-        
         <form className="form-container" onSubmit={this.submitForm}>
-          
           <div className="input-container">{this.renderUsernameField()}</div>
           <div className="input-container">{this.renderPasswordField()}</div>
           <button type="submit" className="login-button">
@@ -115,14 +110,14 @@ class LoginForm extends Component {
           {showSubmitError && <p className="error-message">*{errorMsg}</p>}
           <p>
             Don't have an account?
-            <a href="/signup" className="sign-up-link space">
-                Sign Up
-            </a>
+            <Link to="/signup" className="sign-up-link space">
+              Sign Up
+            </Link>
           </p>
         </form>
       </div>
-    )
+    );
   }
 }
 
-export default LoginForm
+export default LoginForm;

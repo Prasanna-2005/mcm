@@ -9,20 +9,16 @@ import { Navbar, Container, Nav, NavDropdown, Form, FormControl, Button } from '
 
 import './home.css'
 
-class Home extends Component {
+class Ihome extends Component {
     render(){
         return(
             <div>
                <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
         <Navbar.Brand href="#">CineHive </Navbar.Brand>
-        
         <Nav className="ms-auto">
-        <Link to="/profile">
-            <Button variant="outline-light">Profile</Button>
-          </Link>
-          <Link to="/">
-            <Button variant="outline-light" style={{marginLeft:"7px"}}>Logout</Button>
+          <Link to="/login">
+            <Button variant="outline-light">Login</Button>
           </Link>
         </Nav>
       </Container>
@@ -31,4 +27,4 @@ class Home extends Component {
         )
     }
 }
-export default Home;
+export default Ihome;
