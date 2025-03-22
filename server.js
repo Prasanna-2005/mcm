@@ -3,7 +3,6 @@ const express = require('express');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const cors = require('cors');
-const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -18,7 +17,7 @@ app.use(cors({
 
 
 
-// Session store options
+// Session store 
 const sessionStoreOptions = {
   host: process.env.DB_HOST,
   port: 3306,
@@ -35,11 +34,7 @@ const sessionStoreOptions = {
     }
   }
 };
-
 const sessionStore = new MySQLStore(sessionStoreOptions);
-
-
-// Session middleware
 app.use(session({
   key: 'moviedb_session',
   secret: process.env.SESSION_SECRET,
@@ -53,19 +48,26 @@ app.use(session({
   }
 }));
 
+//taking the local storage to the server under movie_posters
+app.use('/grid_images', express.static('uploads/grid_images'));
+app.use('/theme_images', express.static('uploads/theme_images'));
 
-// Routes
+
 const authRoutes = require('./routes/auth');
 app.use('/', authRoutes);
+const movieRoutes = require('./routes/movie');
+app.use('/', movieRoutes);
+
+
+
 
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Movie Catalog API' });
 });
 
-
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port http://localhost:${PORT}`);
+  console.log(`Server running on port ${process.env.BACKEND_URL}`);
 });

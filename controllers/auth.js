@@ -1,12 +1,11 @@
-// backend/controllers/auth.js
-const bcrypt = require('bcryptjs');
 const db = require('../config/db.config');
+const bcrypt = require('bcrypt');
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, admin } = req.body;
     
-    // Basic validation
+
     if (!username || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -24,15 +23,24 @@ exports.register = async (req, res) => {
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Create new user
+    
+    // Determine role based on admin code
+    let role = 'user';
+    if (admin && admin === process.env.ADMIN_CODE) {
+      role = 'admin';
+    }
+    
+    // Create new user with role
     const [result] = await db.query(
-      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-      [username, email, hashedPassword]
+      'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+      [username, email, hashedPassword, role]
     );
     
     if (result.affectedRows === 1) {
-      return res.status(201).json({ message: 'User registered successfully' });
+      return res.status(201).json({ 
+        message: 'User registered successfully', 
+        role: role 
+      });
     } else {
       return res.status(500).json({ message: 'Failed to register user' });
     }
@@ -45,16 +53,20 @@ exports.register = async (req, res) => {
 
 
 
+
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Basic validation
+    
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
-    
-    const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+
+    const [users] = await db.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
     
     if (users.length === 0) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -63,46 +75,28 @@ exports.login = async (req, res) => {
     const user = users[0];
     
     // Verify password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     
     // Store user info in session
-    req.session.userId = user.id;
-    req.session.username = user.username;
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    };
     req.session.isLoggedIn = true;
     
-    // Send response (excluding password)
-    const { password: _, ...userData } = user;
-    
-    return res.status(200).json({
+    return res.status(200).json({ 
       message: 'Login successful',
-      user: userData
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Server error' });
-  }
-};
-
-
-
-
-
-exports.logout = async (req, res) => {
-  try {
-    // Destroy the session
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Error destroying session:', err);
-        return res.status(500).json({ message: 'Failed to logout' });
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
       }
-      
-      // Clear the session cookie
-      res.clearCookie('moviedb_session'); 
-      
-      return res.status(200).json({ message: 'Logged out successfully' });
     });
   } catch (error) {
     console.error(error);
@@ -111,20 +105,28 @@ exports.logout = async (req, res) => {
 };
 
 
+
+
+exports.logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: 'Failed to logout' });
+    }
+    
+    res.clearCookie('moviedb_session');
+    return res.status(200).json({ message: 'Logged out successfully' });
+  });
+};
 
 
 
 
 exports.getProfile = async (req, res) => {
   try {
-    // Check if user is logged in
-    if (!req.session.userId) {
-      return res.status(401).json({ message: 'Not authenticated' });
-    }
     
     const [users] = await db.query(
-      'SELECT id, username, email FROM users WHERE id = ?', 
-      [req.session.userId]
+      'SELECT id, username, email,role FROM users WHERE id = ?', 
+      [req.session.user.id]
     );
     
     if (users.length === 0) {
@@ -139,13 +141,19 @@ exports.getProfile = async (req, res) => {
 };
 
 
-
-
-
-// check if user is authenticated
+// Check if user is authenticated
 exports.isAuthenticated = (req, res, next) => {
-  if (req.session && req.session.userId && req.session.isLoggedIn) {
+  if (req.session && req.session.isLoggedIn) {
     return next();
   }
   return res.status(401).json({ message: 'Not authenticated' });
+};
+
+
+
+exports.isAdmin = (req, res, next) => {
+  if (!req.session.user || req.session.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+  next();
 };
