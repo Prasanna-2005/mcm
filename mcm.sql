@@ -57,7 +57,7 @@ CREATE TABLE `genres` (
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +66,7 @@ CREATE TABLE `genres` (
 
 LOCK TABLES `genres` WRITE;
 /*!40000 ALTER TABLE `genres` DISABLE KEYS */;
-INSERT INTO `genres` VALUES (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),(5,'Comedy'),(6,'Crime'),(7,'Documentary'),(8,'Drama'),(9,'Family'),(10,'Fantasy'),(11,'History'),(12,'Horror'),(13,'Music'),(14,'Musical'),(15,'Mystery'),(16,'Romance'),(17,'Sci-Fi'),(18,'Sport'),(19,'Thriller'),(20,'War'),(21,'Western');
+INSERT INTO `genres` VALUES (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),(5,'Comedy'),(6,'Crime'),(27,'Dark Comedy'),(7,'Documentary'),(8,'Drama'),(26,'Experimental'),(9,'Family'),(10,'Fantasy'),(11,'History'),(12,'Horror'),(22,'Kids'),(13,'Music'),(14,'Musical'),(15,'Mystery'),(25,'Neo-Noir'),(24,'Psychological'),(16,'Romance'),(17,'Sci-Fi'),(18,'Sport'),(23,'Superhero'),(19,'Thriller'),(20,'War'),(21,'Western');
 /*!40000 ALTER TABLE `genres` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +94,7 @@ CREATE TABLE `liked_movies` (
 
 LOCK TABLES `liked_movies` WRITE;
 /*!40000 ALTER TABLE `liked_movies` DISABLE KEYS */;
-INSERT INTO `liked_movies` VALUES (1,1);
+INSERT INTO `liked_movies` VALUES (1,1),(1,4);
 /*!40000 ALTER TABLE `liked_movies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +117,7 @@ CREATE TABLE `movie_cast_crew` (
   KEY `idx_role` (`role`),
   CONSTRAINT `movie_cast_crew_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE,
   CONSTRAINT `movie_cast_crew_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +126,7 @@ CREATE TABLE `movie_cast_crew` (
 
 LOCK TABLES `movie_cast_crew` WRITE;
 /*!40000 ALTER TABLE `movie_cast_crew` DISABLE KEYS */;
-INSERT INTO `movie_cast_crew` VALUES (1,1,1,'Vikram','actor'),(2,1,2,'Sandhanam','actor'),(3,1,3,'Agent Amar','actor');
+INSERT INTO `movie_cast_crew` VALUES (1,1,1,'Vikram','actor'),(2,1,2,'Sandhanam','actor'),(3,1,3,'Agent Amar','actor'),(4,2,4,'Komaram Bheem','actor'),(5,2,5,'Alluri Sitarama Raju','actor'),(6,2,6,NULL,'director'),(7,3,7,'Georgekutty','actor'),(8,3,8,NULL,'director'),(9,4,9,'Shiva','actor'),(10,4,9,NULL,'director');
 /*!40000 ALTER TABLE `movie_cast_crew` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,6 +153,7 @@ CREATE TABLE `movie_genres` (
 
 LOCK TABLES `movie_genres` WRITE;
 /*!40000 ALTER TABLE `movie_genres` DISABLE KEYS */;
+INSERT INTO `movie_genres` VALUES (2,1),(4,1),(2,2),(3,8),(4,8),(3,19);
 /*!40000 ALTER TABLE `movie_genres` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,7 +180,7 @@ CREATE TABLE `movies` (
   KEY `idx_title` (`title`),
   KEY `idx_release_year` (`release_year`),
   CONSTRAINT `movies_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +189,7 @@ CREATE TABLE `movies` (
 
 LOCK TABLES `movies` WRITE;
 /*!40000 ALTER TABLE `movies` DISABLE KEYS */;
-INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',8.3,0,1);
+INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',8.3,0,1),(2,'RRR',2022,NULL,NULL,'Telugu',NULL,8.7,0,NULL),(3,'Drishyam',2013,NULL,NULL,'Malayalam',NULL,8.5,0,NULL),(4,'Kantara',2022,NULL,NULL,'Kannada',NULL,8.3,0,NULL);
 /*!40000 ALTER TABLE `movies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -244,7 +245,7 @@ CREATE TABLE `people` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -253,7 +254,7 @@ CREATE TABLE `people` (
 
 LOCK TABLES `people` WRITE;
 /*!40000 ALTER TABLE `people` DISABLE KEYS */;
-INSERT INTO `people` VALUES (3,'Fahadh Faasil'),(1,'Kamal Haasan'),(2,'Vijay Sethupathi');
+INSERT INTO `people` VALUES (3,'Fahadh Faasil'),(8,'Jeethu Joseph'),(1,'Kamal Haasan'),(7,'Mohanlal'),(4,'N. T. Rama Rao Jr.'),(5,'Ram Charan'),(9,'Rishab Shetty'),(6,'S. S. Rajamouli'),(2,'Vijay Sethupathi');
 /*!40000 ALTER TABLE `people` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -351,6 +352,31 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sessions` (
+  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `expires` int unsigned NOT NULL,
+  `data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  PRIMARY KEY (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessions`
+--
+
+LOCK TABLES `sessions` WRITE;
+/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+INSERT INTO `sessions` VALUES ('8g1xnWWqjOiZwmybBO1O3feMwAAMk9tR',1742822022,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2025-03-24T12:17:54.035Z\",\"secure\":false,\"httpOnly\":true,\"path\":\"/\"},\"user\":{\"id\":1,\"username\":\"testuser\",\"email\":\"test@example.com\",\"role\":\"user\"},\"isLoggedIn\":true}');
+/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -405,7 +431,7 @@ CREATE TABLE `watchlists` (
 
 LOCK TABLES `watchlists` WRITE;
 /*!40000 ALTER TABLE `watchlists` DISABLE KEYS */;
-INSERT INTO `watchlists` VALUES (1,1);
+INSERT INTO `watchlists` VALUES (1,1),(1,2);
 /*!40000 ALTER TABLE `watchlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -424,3 +450,4 @@ ALTER TABLE `reviews` ADD `rating` INT NOT NULL;
 --add column action in review_likes table "like" or "dislike"
 ALTER TABLE `review_likes` ADD `action` ENUM('like','dislike') NOT NULL;
 
+-- Dump completed on 2025-03-23 18:44:29

@@ -4,9 +4,8 @@ const authController = require('../controllers/auth');
 const MovieController = require('../controllers/movie');
 
 
-router.get('/movie_grid_layout', authController.isAuthenticated ,MovieController.getAllMovies); 
-router.get('/movie/:id', authController.isAuthenticated ,MovieController.getMovieById); //single json
-router.get('/movies/all', authController.isAuthenticated, MovieController.getAllMoviesWithDetails); //list of jsons
-router.get('/search_by_title',authController.isAuthenticated , MovieController.searchMovies);
+router.get('/movie_grid_layout', authController.isAuthenticated ,MovieController.getAllMoviesForGridview); 
+router.get('/movie/:id', authController.isAuthenticated ,MovieController.getMovieById);
+router.get('/search',authController.isAuthenticated , MovieController.searchMoviesByTitle);
 
 module.exports = router;

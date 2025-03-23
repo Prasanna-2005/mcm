@@ -57,7 +57,11 @@ const authRoutes = require('./routes/auth');
 app.use('/', authRoutes);
 const movieRoutes = require('./routes/movie');
 app.use('/', movieRoutes);
-const reviewRoutes = require('./routes/reviews');
+const movieFilterRoutes = require('./routes/movie_filters');
+app.use('/', movieFilterRoutes);
+const toggleRoutes = require('./routes/toggle');
+app.use('/', toggleRoutes);
+const reviewRoutes = require('./routes/review');
 app.use('/', reviewRoutes);
 
 
