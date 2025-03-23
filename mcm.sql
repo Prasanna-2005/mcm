@@ -419,3 +419,8 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-03-23 13:44:36
+ALTER TABLE `reviews` ADD `rating` INT NOT NULL;
+
+--add column action in review_likes table "like" or "dislike"
+ALTER TABLE `review_likes` ADD `action` ENUM('like','dislike') NOT NULL;
+
