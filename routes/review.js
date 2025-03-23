@@ -1,30 +1,20 @@
 const express = require("express");
+const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth");
-const MovieFilterController = require("../controllers/review");
+const ReviewController = require("../controllers/review"); 
 
 router.get(
-  "/movies/:movieId/reviews",
-  authController.isAuthenticated,
-  MovieFilterController.getReviewsByMovieId
+  '/review/:movieId', authController.isAuthenticated,ReviewController.getReviewsByMovieId
 );
 
 router.post(
-  "/movies/:movieId/reviews",
-  authController.isAuthenticated,
-  MovieFilterController.addReview
-);
-
-router.post(
-  "/movies/:movieId/reviews/:reviewId/:action", // action can be 'like' or 'dislike'
-  authController.isAuthenticated,
-  MovieFilterController.likeOrDislikeReview
+  '/review/:movieId/', authController.isAuthenticated, ReviewController.addOrUpdateReview 
 );
 
 router.delete(
-  "/movies/:movieId/reviews/:reviewId",
-  authController.isAuthenticated,
-  MovieFilterController.deleteReview
+  "/review/:movieId/:reviewId",authController.isAuthenticated,ReviewController.deleteReview
 );
 
 module.exports = router;
+

@@ -32,7 +32,7 @@ CREATE TABLE `activity_logs` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `activity_logs` (
 
 LOCK TABLES `activity_logs` WRITE;
 /*!40000 ALTER TABLE `activity_logs` DISABLE KEYS */;
-INSERT INTO `activity_logs` VALUES (1,1,'delete','movie',2,'2025-03-22 12:59:28');
+INSERT INTO `activity_logs` VALUES (1,1,'delete','movie',2,'2025-03-22 12:59:28'),(2,1,'update','movie',2,'2025-03-23 16:44:05'),(3,1,'update','movie',3,'2025-03-23 16:44:05'),(4,1,'update','movie',4,'2025-03-23 16:44:05'),(5,1,'update','movie',2,'2025-03-23 16:45:46'),(6,1,'update','movie',3,'2025-03-23 16:45:46'),(7,1,'update','movie',4,'2025-03-23 16:45:46');
 /*!40000 ALTER TABLE `activity_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,8 +173,8 @@ CREATE TABLE `movies` (
   `language` varchar(50) DEFAULT NULL,
   `country` varchar(100) DEFAULT NULL,
   `average_rating` decimal(3,1) DEFAULT '0.0',
-  `rating_count` int unsigned DEFAULT '0',
   `created_by` bigint unsigned DEFAULT NULL,
+  `rating_count` int unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `created_by` (`created_by`),
   KEY `idx_title` (`title`),
@@ -189,7 +189,7 @@ CREATE TABLE `movies` (
 
 LOCK TABLES `movies` WRITE;
 /*!40000 ALTER TABLE `movies` DISABLE KEYS */;
-INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',8.3,0,1),(2,'RRR',2022,NULL,NULL,'Telugu',NULL,8.7,0,NULL),(3,'Drishyam',2013,NULL,NULL,'Malayalam',NULL,8.5,0,NULL),(4,'Kantara',2022,NULL,NULL,'Kannada',NULL,8.3,0,NULL);
+INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',8.3,1,0),(2,'RRR',2022,187,'A fearless warrior and a British officer become friends, only to find themselves on opposite sides of a revolution.','Telugu','India',8.7,1,0),(3,'Drishyam',2013,160,'A man goes to great lengths to protect his family after they become involved in a crime.','Malayalam','India',8.5,1,0),(4,'Kantara',2022,148,'A story that blends folklore, action, and a man’s connection with nature, set against the backdrop of coastal Karnataka.','Kannada','India',8.3,1,0);
 /*!40000 ALTER TABLE `movies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -298,6 +298,7 @@ CREATE TABLE `reviews` (
   `content` text NOT NULL,
   `likes_count` int unsigned DEFAULT '0',
   `dislikes_count` int unsigned DEFAULT '0',
+  `rating` int unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx_movie_id` (`movie_id`),
   KEY `idx_user_id` (`user_id`),
@@ -444,10 +445,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-23 13:44:36
-ALTER TABLE `reviews` ADD `rating` INT NOT NULL;
-
---add column action in review_likes table "like" or "dislike"
-ALTER TABLE `review_likes` ADD `action` ENUM('like','dislike') NOT NULL;
-
--- Dump completed on 2025-03-23 18:44:29
+-- Dump completed on 2025-03-23 22:46:59
