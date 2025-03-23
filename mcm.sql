@@ -71,6 +71,34 @@ INSERT INTO `genres` VALUES (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Bio
 UNLOCK TABLES;
 
 --
+-- Table structure for table `liked_movies`
+--
+
+DROP TABLE IF EXISTS `liked_movies`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `liked_movies` (
+  `user_id` bigint unsigned NOT NULL,
+  `movie_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`user_id`,`movie_id`),
+  KEY `movie_id` (`movie_id`),
+  KEY `idx_user_id` (`user_id`),
+  CONSTRAINT `liked_movies_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `liked_movies_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `liked_movies`
+--
+
+LOCK TABLES `liked_movies` WRITE;
+/*!40000 ALTER TABLE `liked_movies` DISABLE KEYS */;
+INSERT INTO `liked_movies` VALUES (1,1);
+/*!40000 ALTER TABLE `liked_movies` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `movie_cast_crew`
 --
 
@@ -323,57 +351,6 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Table structure for table `sessions`
---
-
-DROP TABLE IF EXISTS `sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessions` (
-  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `expires` int unsigned NOT NULL,
-  `data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  PRIMARY KEY (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sessions`
---
-
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_favorites`
---
-
-DROP TABLE IF EXISTS `user_favorites`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_favorites` (
-  `user_id` bigint unsigned NOT NULL,
-  `movie_id` bigint unsigned NOT NULL,
-  PRIMARY KEY (`user_id`,`movie_id`),
-  KEY `movie_id` (`movie_id`),
-  KEY `idx_user_id` (`user_id`),
-  CONSTRAINT `user_favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `user_favorites_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_favorites`
---
-
-LOCK TABLES `user_favorites` WRITE;
-/*!40000 ALTER TABLE `user_favorites` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_favorites` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `users`
 --
 
@@ -403,6 +380,34 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'testuser','test@example.com','$2b$10$hmKMk0D2WSXWhxT/enmIOOnZ/1Eo3wUvBS73K21Ua9CRYaAXl3Mwu','user');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `watchlists`
+--
+
+DROP TABLE IF EXISTS `watchlists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `watchlists` (
+  `user_id` bigint unsigned NOT NULL,
+  `movie_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`user_id`,`movie_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_movie_id` (`movie_id`),
+  CONSTRAINT `watchlists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `watchlists_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `watchlists`
+--
+
+LOCK TABLES `watchlists` WRITE;
+/*!40000 ALTER TABLE `watchlists` DISABLE KEYS */;
+INSERT INTO `watchlists` VALUES (1,1);
+/*!40000 ALTER TABLE `watchlists` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -413,4 +418,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-22 20:06:06
+-- Dump completed on 2025-03-23 13:44:36
