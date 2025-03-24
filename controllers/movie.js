@@ -25,7 +25,7 @@ const MovieController = {
   
       const moviesWithImages = movies.map(movie => ({
         ...movie,
-        imageUrl: `${process.env.BACKEND_URL}/grid_posters/${movie.id}.jpg`
+        imageUrl: `${process.env.BACKEND_URL}/grid_images/${movie.id}.jpg`
       }));
   
       res.status(200).json({
@@ -53,7 +53,7 @@ const MovieController = {
   
       const moviesWithImages = movies.map(movie => ({
         ...movie,
-        imageUrl: `${process.env.BACKEND_URL}/grid_posters/${movie.id}.jpg`
+        imageUrl: `${process.env.BACKEND_URL}/grid_images/${movie.id}.jpg`
       }));
   
       res.status(200).json({

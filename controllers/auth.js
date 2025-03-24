@@ -142,12 +142,3 @@ exports.isAuthenticated = (req, res, next) => {
   }
   return res.status(401).json({ message: 'Not authenticated' });
 };
-
-
-
-exports.isAdmin = (req, res, next) => {
-  if (!req.session.user || req.session.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin access required' });
-  }
-  next();
-};
