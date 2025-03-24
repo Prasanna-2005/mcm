@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, admin } = req.body;
+    const { username, email, password } = req.body;
     
 
     if (!username || !email || !password) {
@@ -24,13 +24,7 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     
-    // Determine role based on admin code
     let role = 'user';
-    if (admin && admin === process.env.ADMIN_CODE) {
-      role = 'admin';
-    }
-    
-    // Create new user with role
     const [result] = await db.query(
       'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
       [username, email, hashedPassword, role]

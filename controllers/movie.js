@@ -43,7 +43,33 @@ const MovieController = {
     }
   },
   
+  NAgetAllMoviesForGridview: async (req, res) => {
+    try {      
+      const [movies] = await db.query(`
+        SELECT 
+          m.id, m.title, m.average_rating
+        FROM movies m
+        ORDER BY m.title ASC`);
   
+      const moviesWithImages = movies.map(movie => ({
+        ...movie,
+        imageUrl: `${process.env.BACKEND_URL}/grid_posters/${movie.id}.jpg`
+      }));
+  
+      res.status(200).json({
+        status: 'success',
+        data: {
+          movies: moviesWithImages
+        }
+      });
+    } catch (error) {
+      console.error('Error getting all movies:', error);
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to fetch movies'
+      });
+    }
+  },
 
 
 
@@ -119,6 +145,60 @@ getMovieById: async (req, res) => {
     });
   }
 },
+
+
+NAgetMovieById: async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Fetch movie details
+    const [movieDetails] = await db.query(`
+      SELECT * FROM movies WHERE id = ?
+    `, [id]);
+
+    if (movieDetails.length === 0) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Movie not found'
+      });
+    }
+
+    // Fetch genres for the movie
+    const [genres] = await db.query(`
+      SELECT g.id, g.name
+      FROM genres g
+      JOIN movie_genres mg ON g.id = mg.genre_id
+      WHERE mg.movie_id = ?
+    `, [id]);
+
+    // Fetch cast and crew for the movie
+    const [castCrew] = await db.query(`
+      SELECT mcc.id, mcc.character_name, mcc.role, 
+             p.id AS person_id, p.name
+      FROM movie_cast_crew mcc
+      JOIN people p ON mcc.person_id = p.id
+      WHERE mcc.movie_id = ?
+    `, [id]);
+
+    // Combine all data
+    const movie = movieDetails[0];
+    movie.genres = genres;
+    movie.castCrew = castCrew;
+    movie.posterimageUrl = `${process.env.BACKEND_URL}/grid_images/${movie.id}.jpg`;
+    movie.themeimageUrl = `${process.env.BACKEND_URL}/theme_images/${movie.id}.jpg`;
+
+    res.status(200).json({
+      status: 'success',
+      data: { movie }
+    });
+  } catch (error) {
+    console.error(`Error getting movie with ID ${req.params.id}:`, error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to fetch movie details'
+    });
+  }
+},
+
 
 
   // for SEARCH BAR
