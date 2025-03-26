@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
+        <a href="/dashboard" class="text-2xl font-bold">🚀 Admin Dashboard</a>
+        <a href="/logout" class="hover:underline">Logout</a>
+    </nav>
+
+    <div class="max-w-5xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-3xl font-bold text-gray-800">All Users</h2>
+
+        <!-- Search Input -->
+        <div class="mt-4">
+            <input type="text" id="searchInput" class="border p-2 w-full rounded-md"
+                placeholder="Search by User ID / Username">
+        </div>
+
+        <!-- User Table -->
+        <table class="w-full mt-4 border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Username</th>
+                    <th class="border p-2">Email</th>
+                    <th class="border p-2">Role</th>
+                    <th class="border p-2"></th>
+                </tr>
+            </thead>
+            <tbody id="userTable">
+                <% users.forEach(user=> { %>
+                    <tr class="bg-white border" data-user-id="<%= user.id %>">
+                        <td class="border p-2">
+                            <%= user.id %>
+                        </td>
+                        <td class="border p-2">
+                            <%= user.username %>
+                        </td>
+                        <td class="border p-2">
+                            <%= user.email %>
+                        </td>
+                        <td class="border p-2 role">
+                            <%= user.role %>
+                        </td>
+                        <td class="border p-2 text-center">
+                            <% if (currentUser.role==='admin' && currentUser.id !==user.id) { %>
+                                <button onclick="confirmDelete('<%= user.id %>')"
+                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors">
+                                    Delete
+                                </button>
+                                <% } else { %>
+                                    <span class="text-gray-400">Cannot delete</span>
+                                    <% } %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById("searchInput").addEventListener("input", filterUsers);
+
+        function filterUsers() {
+            let searchValue = document.getElementById("searchInput").value.toLowerCase();
+            let rows = document.querySelectorAll("#userTable tr");
+
+            rows.forEach(row => {
+                let userId = row.children[0].textContent.toLowerCase();
+                let userName = row.children[1].textContent.toLowerCase();
+
+                let matchesSearch = userId.includes(searchValue) || userName.includes(searchValue);
+
+                row.style.display = matchesSearch ? "" : "none";
+            });
+        }
+
+        function confirmDelete(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                deleteUser(userId);
+            }
+        }
+
+        function deleteUser(userId) {
+            fetch(`/users/delete/${userId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message || 'Failed to delete user');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Remove the row from the table
+                    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                    if (row) {
+                        row.remove();
+                    }
+                    alert(data.message || 'User deleted successfully');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(error.message || 'An error occurred while deleting the user');
+                });
+        }
+    </script>
+</body>
+
+</html>

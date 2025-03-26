@@ -17,6 +17,18 @@
     <div class="max-w-4xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
         <h2 class="text-3xl font-bold text-gray-800">Welcome, <%= user.username %>!</h2>
         <p class="mt-4 text-gray-600">You are now logged in.</p>
+
+        <div class="mt-6">
+            <a href="/view-users"
+                class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                View Users
+            </a>
+
+            <a href="/add-movies"
+                class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+                Add Movies
+            </a>
+        </div>
     </div>
 </body>
 

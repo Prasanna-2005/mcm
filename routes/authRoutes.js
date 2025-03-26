@@ -3,6 +3,17 @@ const bcrypt = require("bcrypt");
 const db = require("../config/db");
 const router = express.Router();
 
+
+
+const isAuthenticated = (req, res, next) => {
+  if (req.session && req.session.user) {
+      return next(); // User is authenticated, proceed
+  }
+  res.redirect("/login"); // Redirect to login if not authenticated
+};
+
+
+
 // Register Page
 router.get("/register", (req, res) => {
   res.render("register", { title: "Register" });
@@ -12,7 +23,6 @@ router.get("/register", (req, res) => {
 router.get("/login", (req, res) => {
   res.render("login", { title: "Login" });
 });
-
 
 
 
@@ -75,7 +85,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    req.session.user = { id: user.id, email: user.email, username: user.username };
+    req.session.user = { id: user.id, email: user.email, username: user.username,role:'admin' };
 
     res.json({ 
       message: "Login successful", 
@@ -89,7 +99,7 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.get("/dashboard", (req, res) => {
+router.get("/dashboard", isAuthenticated,(req, res) => {
   if (!req.session.user) {
     return res.redirect("/login"); // Redirect to login if not logged in
   }
@@ -103,8 +113,10 @@ router.get("/logout", (req, res) => {
             console.error("Logout error:", err);
             return res.status(500).json({ error: "Error logging out" });
         }
+        res.clearCookie("connect.sid"); // Clear session cookie
         res.redirect("/"); // Redirect to logout page
     });
 });
+
 
 module.exports = router;
