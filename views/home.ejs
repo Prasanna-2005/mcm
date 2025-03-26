@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background-color: #0f172a;
+            /* Deep blue-gray background */
+        }
+
+        #background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .glass-morphism {
+            background: rgba(30, 41, 59, 0.4);
+            /* Darker, more transparent glass effect */
+            backdrop-filter: blur(15px);
+            border-radius: 1rem;
+            border: 1px solid rgba(71, 85, 105, 0.2);
+            /* Subtle border */
+        }
+
+        .floating-button {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .floating-button:hover {
+            transform: translateZ(50px) scale(1.05);
+        }
+
+        .glowing-text {
+            text-shadow: 0 0 10px rgba(129, 140, 248, 0.5),
+                0 0 20px rgba(129, 140, 248, 0.3);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center text-gray-100">
+    <div id="background-container"></div>
+
+    <div class="w-full max-w-md z-10 relative">
+        <div class="glass-morphism p-8 rounded-2xl shadow-2xl text-center 
+                    animate__animated animate__fadeInUp">
+            <div class="absolute top-0 left-0 right-0 -mt-16 flex justify-center">
+                <div class="w-32 h-32 bg-gradient-to-br from-indigo-600 to-purple-700 
+                            rounded-full flex items-center justify-center 
+                            shadow-2xl transform hover:rotate-360 transition duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="pt-20">
+                <h1 class="text-4xl font-bold mb-10 glowing-text
+                           bg-clip-text text-transparent 
+                           bg-gradient-to-r from-indigo-400 to-purple-500">
+                    Admin Portal
+                </h1>
+
+                <div class="space-y-6">
+                    <a href="/login" class="block floating-button
+                        bg-gradient-to-r from-indigo-600 to-purple-700 
+                        hover:from-indigo-700 hover:to-purple-800 
+                        text-white font-semibold py-4 px-6 
+                        rounded-xl 
+                        transition duration-300 
+                        transform hover:-translate-y-1 
+                        shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                            </svg>
+                            Login
+                        </div>
+                    </a>
+                    <a href="/register" class="block floating-button
+                        bg-gradient-to-r from-emerald-600 to-teal-700 
+                        hover:from-emerald-700 hover:to-teal-800 
+                        text-white font-semibold py-4 px-6 
+                        rounded-xl 
+                        transition duration-300 
+                        transform hover:-translate-y-1 
+                        shadow-lg hover:shadow-xl">
+                        <div class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            Register
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Three.js 3D Background Animation
+        const container = document.getElementById('background-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Create multiple floating spheres
+        const spheres = [];
+        const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+        const colors = [
+            0x4338ca, 0x6366f1, 0x2563eb, 0x7c3aed,
+            0x5b21b6, 0x4f46e5, 0x3730a3
+        ];
+
+        for (let i = 0; i < 20; i++) {
+            const material = new THREE.MeshBasicMaterial({
+                color: colors[Math.floor(Math.random() * colors.length)],
+                transparent: true,
+                opacity: 0.4
+            });
+            const sphere = new THREE.Mesh(sphereGeometry, material);
+
+            // Randomize initial positions
+            sphere.position.x = Math.random() * 20 - 10;
+            sphere.position.y = Math.random() * 20 - 10;
+            sphere.position.z = Math.random() * -20 - 10;
+
+            // Store additional properties for animation
+            sphere.userData = {
+                speed: {
+                    x: (Math.random() - 0.5) * 0.05,
+                    y: (Math.random() - 0.5) * 0.05,
+                    z: (Math.random() - 0.5) * 0.05
+                }
+            };
+
+            scene.add(sphere);
+            spheres.push(sphere);
+        }
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Animate spheres
+            spheres.forEach(sphere => {
+                sphere.position.x += sphere.userData.speed.x;
+                sphere.position.y += sphere.userData.speed.y;
+                sphere.position.z += sphere.userData.speed.z;
+
+                // Bounce off walls
+                if (Math.abs(sphere.position.x) > 10) sphere.userData.speed.x *= -1;
+                if (Math.abs(sphere.position.y) > 10) sphere.userData.speed.y *= -1;
+                if (sphere.position.z < -20 || sphere.position.z > 0) sphere.userData.speed.z *= -1;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+
+</html>

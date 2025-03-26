@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden;
+            background-color: #0a0a1a;
+        }
+
+        #background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .glass-morphism {
+            background: rgba(20, 20, 50, 0.4);
+            backdrop-filter: blur(15px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.125);
+            box-shadow: 0 0 30px rgba(57, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-morphism:hover {
+            box-shadow: 0 0 50px rgba(57, 255, 255, 0.5);
+        }
+
+        .neon-text {
+            text-shadow:
+                0 0 5px rgba(57, 255, 255, 0.7),
+                0 0 10px rgba(57, 255, 255, 0.5),
+                0 0 15px rgba(57, 255, 255, 0.3);
+        }
+
+        .neon-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(57, 255, 255, 0.3), transparent);
+            transition: all 0.5s;
+        }
+
+        .neon-button:hover::before {
+            left: 100%;
+        }
+
+        .neon-button:hover {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        input {
+            background-color: rgba(10, 10, 26, 0.7) !important;
+            color: #39ffff !important;
+            border-color: rgba(57, 255, 255, 0.3) !important;
+        }
+
+        input:focus {
+            outline: none !important;
+            box-shadow: 0 0 10px rgba(57, 255, 255, 0.5) !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center">
+    <div id="background-container"></div>
+
+    <div class="w-full max-w-md z-10 relative">
+        <div class="glass-morphism p-8 rounded-2xl shadow-2xl">
+            <h2 class="text-4xl font-bold mb-6 text-center text-cyan-300 neon-text">
+                Login
+            </h2>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-cyan-300 font-bold mb-2">Email</label>
+                    <input type="email" id="email" name="email" required class="w-full px-3 py-2 border border-cyan-500 rounded-lg 
+                               focus:outline-none focus:ring-2 focus:ring-cyan-500
+                               transition duration-300">
+                    <p id="emailError" class="text-red-400 text-sm mt-1 hidden">
+                        Invalid neural connection
+                    </p>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-cyan-300 font-bold mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required class="w-full px-3 py-2 border border-cyan-500 rounded-lg 
+                                   focus:outline-none focus:ring-2 focus:ring-cyan-500
+                                   transition duration-300">
+                    </div>
+                    <p id="passwordError" class="text-red-400 text-sm mt-1 hidden">
+                        Password required
+                    </p>
+                </div>
+
+                <p id="generalError" class="text-red-400 text-sm mt-1 hidden"></p>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-cyan-500 to-blue-700 
+                           text-white font-bold py-3 rounded-lg 
+                           shadow-md neon-button
+                           transition-all duration-300">
+                    Proceed
+                </button>
+            </form>
+
+            <p class="text-center mt-4 text-cyan-300">
+                New user?
+                <a href="/register" class="text-cyan-500 hover:underline neon-text">
+                    Register
+                </a>
+            </p>
+        </div>
+    </div>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginForm = document.getElementById("loginForm");
+
+            loginForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const email = document.getElementById("email").value.trim();
+                const password = document.getElementById("password").value.trim();
+                const emailError = document.getElementById("emailError");
+                const passwordError = document.getElementById("passwordError");
+                const generalError = document.getElementById("generalError");
+
+                emailError.classList.add("hidden");
+                passwordError.classList.add("hidden");
+                generalError.classList.add("hidden");
+
+                if (!/\S+@\S+\.\S+/.test(email)) {
+                    emailError.textContent = "Invalid email format";
+                    emailError.classList.remove("hidden");
+                    return;
+                }
+
+                if (password.length < 6) {
+                    passwordError.textContent = "Password must be at least 6 characters";
+                    passwordError.classList.remove("hidden");
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        generalError.textContent = result.error || "Login failed";
+                        generalError.classList.remove("hidden");
+                        return;
+                    }
+
+                    window.location.href = "/dashboard";
+                } catch (error) {
+                    generalError.textContent = "An error occurred. Try again later.";
+                    generalError.classList.remove("hidden");
+                }
+            });
+        });
+
+
+
+        // Three.js 3D Background Animation
+        const container = document.getElementById('background-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Create multiple floating spheres with cyberpunk color palette
+        const spheres = [];
+        const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+        const colors = [
+            0x39ffff,  // Neon Cyan
+            0x2575fc,  // Electric Blue
+            0xff4136,  // Bright Red
+            0x7b68ee,  // Neon Purple
+            0x00ff7f   // Bright Green
+        ];
+
+        for (let i = 0; i < 30; i++) {
+            const material = new THREE.MeshBasicMaterial({
+                color: colors[Math.floor(Math.random() * colors.length)],
+                transparent: true,
+                opacity: 0.4
+            });
+            const sphere = new THREE.Mesh(sphereGeometry, material);
+
+            // Randomize initial positions with wider spread
+            sphere.position.x = Math.random() * 30 - 15;
+            sphere.position.y = Math.random() * 30 - 15;
+            sphere.position.z = Math.random() * -30 - 15;
+
+            // Store additional properties for animation
+            sphere.userData = {
+                speed: {
+                    x: (Math.random() - 0.5) * 0.08,
+                    y: (Math.random() - 0.5) * 0.08,
+                    z: (Math.random() - 0.5) * 0.08
+                }
+            };
+
+            scene.add(sphere);
+            spheres.push(sphere);
+        }
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Animate spheres
+            spheres.forEach(sphere => {
+                sphere.position.x += sphere.userData.speed.x;
+                sphere.position.y += sphere.userData.speed.y;
+                sphere.position.z += sphere.userData.speed.z;
+
+                // Bounce off walls with wider boundaries
+                if (Math.abs(sphere.position.x) > 15) sphere.userData.speed.x *= -1;
+                if (Math.abs(sphere.position.y) > 15) sphere.userData.speed.y *= -1;
+                if (sphere.position.z < -30 || sphere.position.z > 0) sphere.userData.speed.z *= -1;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Cyberpunk Background Animation */
+        @keyframes cityscape-movement {
+            0% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(-50px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes data-pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes hologram-flicker {
+
+            0%,
+            100% {
+                opacity: 0.9;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0c1a, #1a2130);
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        .cityscape-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            .cityscape-bg {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221000%22%20height%3D%22600%22%20viewBox%3D%220%200%201000%20600%22%20fill%3D%22none%22%3E%0A%20%3Crect%20width%3D%221000%22%20height%3D%22600%22%20fill%3D%22%230a0c1a%22%20%2F%3E%20%3Crect%20x%3D%2250%22%20y%3D%22100%22%20width%3D%2220%22%20height%3D%22300%22%20fill%3D%22%231a2130%22%20%2F%3E%20%3Crect%20x%3D%22100%22%20y%3D%2250%22%20width%3D%2230%22%20height%3D%22400%22%20fill%3D%22%232a3040%22%20%2F%3E%20%3Crect%20x%3D%22200%22%20y%3D%22150%22%20width%3D%2225%22%20height%3D%22250%22%20fill%3D%22%231a2130%22%20%2F%3E%20%3Ccircle%20cx%3D%22500%22%20cy%3D%22300%22%20r%3D%2210%22%20fill%3D%22%23ff6b6b%22%20%2F%3E%20%3C%2Fsvg%3E") repeat;
+                opacity: 0.3;
+                animation: cityscape-movement 20s infinite linear;
+                z-index: -2;
+            }
+        }
+
+        .holographic-panel {
+            background: rgba(20, 30, 50, 0.6);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(100, 230, 255, 0.2);
+            box-shadow: 0 0 20px rgba(50, 200, 255, 0.3),
+                inset 0 0 30px rgba(100, 230, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-glow:focus {
+            box-shadow: 0 0 15px rgba(50, 200, 255, 0.5);
+            border-color: rgba(100, 230, 255, 0.7);
+        }
+
+        .ai-assistant {
+            animation: hologram-flicker 3s infinite;
+            opacity: 0.9;
+        }
+
+        .data-stream {
+            position: absolute;
+            background: linear-gradient(45deg, #00ffff, #1e90ff);
+            width: 2px;
+            height: 100px;
+            opacity: 0.3;
+            animation: data-pulse 2s infinite;
+        }
+    </style>
+</head>
+
+<body class="relative min-h-screen flex items-center justify-center">
+    <!-- Cityscape Background -->
+    <div class="cityscape-bg absolute inset-0 z-0"></div>
+
+    <!-- Data Stream Effects -->
+    <div class="data-stream absolute top-20 left-20 transform rotate-45 z-0"></div>
+    <div class="data-stream absolute bottom-10 right-20 transform -rotate-45 z-0"></div>
+
+    <!-- Main Registration Container -->
+    <div class="relative z-10 w-full max-w-md">
+        <div class="holographic-panel p-8 rounded-2xl shadow-2xl transform transition-all duration-500 hover:scale-105">
+            <h2 class="text-4xl font-bold mb-6 text-center text-cyan-300 tracking-wider">Register</h2>
+            <h3 class="text-xl mb-6 text-center text-gray-400"></h3>
+
+            <form id="registerForm" class="space-y-5">
+                <div class="relative">
+                    <label class="block text-cyan-200 mb-2">Email</label>
+                    <input type="email" id="email" required class="input-glow w-full px-4 py-3 bg-gray-800 text-cyan-100 border-2 border-gray-700 rounded-xl 
+                               focus:outline-none focus:border-cyan-500 transition-all duration-300">
+                </div>
+
+                <div class="relative">
+                    <label class="block text-cyan-200 mb-2">Username</label>
+                    <input type="text" id="username" required class="input-glow w-full px-4 py-3 bg-gray-800 text-cyan-100 border-2 border-gray-700 rounded-xl 
+                               focus:outline-none focus:border-cyan-500 transition-all duration-300">
+                </div>
+
+                <div class="relative">
+                    <label class="block text-cyan-200 mb-2">Password</label>
+                    <input type="password" id="password" required class="input-glow w-full px-4 py-3 bg-gray-800 text-cyan-100 border-2 border-gray-700 rounded-xl 
+                               focus:outline-none focus:border-cyan-500 transition-all duration-300">
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white 
+                           rounded-xl transform hover:scale-105 hover:rotate-2 transition-all duration-300 
+                           focus:outline-none focus:ring-4 focus:ring-cyan-300">
+                    Sign Up
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-gray-500">
+                Already registered?
+                <a href="/login" class="text-cyan-400 hover:text-cyan-200 transition-colors">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating AI Assistant Hologram (SVG Representation) -->
+    <div class="ai-assistant fixed bottom-10 right-10 w-48 h-48 opacity-70 z-0">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="90" fill="rgba(50,200,255,0.1)" />
+            <path d="M100 50 Q150 100 100 150 Q50 100 100 50" stroke="cyan" stroke-width="3" fill="none" />
+        </svg>
+    </div>
+
+    <script src="/js/helper.js"></script>
+
+</body>
+
+</html>
