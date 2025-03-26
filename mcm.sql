@@ -32,7 +32,7 @@ CREATE TABLE `activity_logs` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `activity_logs` (
 
 LOCK TABLES `activity_logs` WRITE;
 /*!40000 ALTER TABLE `activity_logs` DISABLE KEYS */;
-INSERT INTO `activity_logs` VALUES (1,1,'delete','movie',2,'2025-03-22 12:59:28'),(2,1,'update','movie',2,'2025-03-23 16:44:05'),(3,1,'update','movie',3,'2025-03-23 16:44:05'),(4,1,'update','movie',4,'2025-03-23 16:44:05'),(5,1,'update','movie',2,'2025-03-23 16:45:46'),(6,1,'update','movie',3,'2025-03-23 16:45:46'),(7,1,'update','movie',4,'2025-03-23 16:45:46');
+INSERT INTO `activity_logs` VALUES (1,1,'delete','movie',2,'2025-03-22 12:59:28'),(2,1,'update','movie',2,'2025-03-23 16:44:05'),(3,1,'update','movie',3,'2025-03-23 16:44:05'),(4,1,'update','movie',4,'2025-03-23 16:44:05'),(5,1,'update','movie',2,'2025-03-23 16:45:46'),(6,1,'update','movie',3,'2025-03-23 16:45:46'),(7,1,'update','movie',4,'2025-03-23 16:45:46'),(8,1,'update','movie',1,'2025-03-23 17:29:52'),(9,1,'update','movie',1,'2025-03-23 17:29:54'),(10,1,'update','review',1,'2025-03-23 17:29:54'),(11,1,'update','movie',1,'2025-03-23 17:29:55'),(12,1,'update','review',1,'2025-03-23 17:29:55'),(13,1,'update','movie',1,'2025-03-23 17:29:56'),(14,1,'update','review',1,'2025-03-23 17:29:56'),(15,1,'update','movie',1,'2025-03-23 17:30:02'),(16,1,'update','review',1,'2025-03-23 17:30:02'),(17,1,'delete','review',1,'2025-03-23 17:33:59'),(18,1,'update','movie',1,'2025-03-23 17:36:23'),(19,1,'update','review',2,'2025-03-23 17:36:43'),(20,1,'update','movie',1,'2025-03-23 17:37:06'),(21,1,'update','review',2,'2025-03-23 17:37:06'),(22,1,'update','movie',1,'2025-03-23 17:37:13'),(23,1,'update','review',2,'2025-03-23 17:37:13'),(24,1,'update','movie',1,'2025-03-23 17:37:18'),(25,1,'update','review',2,'2025-03-23 17:37:18'),(26,1,'update','movie',1,'2025-03-23 17:39:11'),(27,1,'update','review',2,'2025-03-23 17:39:11'),(28,1,'delete','review',2,'2025-03-23 17:40:43'),(29,1,'update','movie',1,'2025-03-23 17:45:39'),(30,1,'delete','review',3,'2025-03-23 17:46:40'),(31,1,'update','movie',1,'2025-03-23 17:46:40'),(32,1,'update','movie',2,'2025-03-23 17:48:00'),(33,1,'update','movie',2,'2025-03-23 17:48:09'),(34,1,'update','review',4,'2025-03-23 17:48:09');
 /*!40000 ALTER TABLE `activity_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +189,7 @@ CREATE TABLE `movies` (
 
 LOCK TABLES `movies` WRITE;
 /*!40000 ALTER TABLE `movies` DISABLE KEYS */;
-INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',8.3,1,0),(2,'RRR',2022,187,'A fearless warrior and a British officer become friends, only to find themselves on opposite sides of a revolution.','Telugu','India',8.7,1,0),(3,'Drishyam',2013,160,'A man goes to great lengths to protect his family after they become involved in a crime.','Malayalam','India',8.5,1,0),(4,'Kantara',2022,148,'A story that blends folklore, action, and a man’s connection with nature, set against the backdrop of coastal Karnataka.','Kannada','India',8.3,1,0);
+INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',10.0,1,1),(2,'RRR',2022,187,'A fearless warrior and a British officer become friends, only to find themselves on opposite sides of a revolution.','Telugu','India',9.0,1,1),(3,'Drishyam',2013,160,'A man goes to great lengths to protect his family after they become involved in a crime.','Malayalam','India',8.5,1,0),(4,'Kantara',2022,148,'A story that blends folklore, action, and a man’s connection with nature, set against the backdrop of coastal Karnataka.','Kannada','India',8.3,1,0);
 /*!40000 ALTER TABLE `movies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -304,7 +304,7 @@ CREATE TABLE `reviews` (
   KEY `idx_user_id` (`user_id`),
   CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE,
   CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,6 +313,7 @@ CREATE TABLE `reviews` (
 
 LOCK TABLES `reviews` WRITE;
 /*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
+INSERT INTO `reviews` VALUES (4,2,1,'Mass Movie',0,0,9);
 /*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -373,7 +374,6 @@ CREATE TABLE `sessions` (
 
 LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-INSERT INTO `sessions` VALUES ('8g1xnWWqjOiZwmybBO1O3feMwAAMk9tR',1742822022,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2025-03-24T12:17:54.035Z\",\"secure\":false,\"httpOnly\":true,\"path\":\"/\"},\"user\":{\"id\":1,\"username\":\"testuser\",\"email\":\"test@example.com\",\"role\":\"user\"},\"isLoggedIn\":true}');
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -391,11 +391,10 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `role` enum('admin','user') DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   KEY `idx_username` (`username`),
   KEY `idx_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,7 +403,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'testuser','test@example.com','$2b$10$hmKMk0D2WSXWhxT/enmIOOnZ/1Eo3wUvBS73K21Ua9CRYaAXl3Mwu','user');
+INSERT INTO `users` VALUES (1,'testuser','test@example.com','$2b$10$hmKMk0D2WSXWhxT/enmIOOnZ/1Eo3wUvBS73K21Ua9CRYaAXl3Mwu','user'),(2,'Prasanna','hello@gmail.com','$2b$10$TnyGLynslqndLVFYlpc6VOvZ/YZD5DFtKp/AsphegD/q8hzwXlA.S','user'),(5,'Prasanna','test@gmail.com','$2b$10$VLw24yoZnuKBoo./JwqsPOZ2GHAVxGjBvHRNIKQdpm.40EF9pDiN2','admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -445,4 +444,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-23 22:46:59
+-- Dump completed on 2025-03-26 23:56:27
