@@ -1,79 +1,107 @@
-// backend/server.js
+require('dotenv').config();
 const express = require('express');
+const mysql = require('mysql2');
+const bcrypt = require('bcrypt');
 const session = require('express-session');
-const MySQLStore = require('express-mysql-session')(session);
-const cors = require('cors');
-const dotenv = require('dotenv');
-dotenv.config();
+const path = require('path');
 
 const app = express();
-app.use(express.json());
+
+// Set view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+    })
+);
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
-}));
+// Database connection
+const pool = mysql
+    .createPool({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        waitForConnections: true,
+        connectionLimit: 5,
+        queueLimit: 0,
+    })
+    .promise();
 
+// Routes
 
+// Render Home Page
+app.get('/', (req, res) => {
+    res.render('index');
+});
 
-// Session store 
-const sessionStoreOptions = {
-  host: process.env.DB_HOST,
-  port: 3306,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  createDatabaseTable: true,
-  schema: {
-    tableName: 'sessions',
-    columnNames: {
-      session_id: 'session_id',
-      expires: 'expires',
-      data: 'data'
+// Render Register Page
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+// Register User
+app.post('/register', async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await pool.query(
+            'INSERT INTO users (username, email, password,role) VALUES (?, ?, ?,"admin")',
+            [username, email, hashedPassword]
+        );
+        res.redirect('/login');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error registering user');
     }
-  }
-};
-const sessionStore = new MySQLStore(sessionStoreOptions);
-app.use(session({
-  key: 'moviedb_session',
-  secret: process.env.SESSION_SECRET,
-  store: sessionStore,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
-    httpOnly: true,
-    secure: false 
-  }
-}));
+});
 
-//taking the local storage to the server under movie_posters
-app.use('/grid_images', express.static('uploads/grid_images'));
-app.use('/theme_images', express.static('uploads/theme_images'));
+// Render Login Page
+app.get('/login', (req, res) => {
+    res.render('login');
+});
 
-
-const authRoutes = require('./routes/auth');
-app.use('/', authRoutes);
-const movieRoutes = require('./routes/movie');
-app.use('/', movieRoutes);
-const movieFilterRoutes = require('./routes/movie_filters');
-app.use('/', movieFilterRoutes);
-const toggleRoutes = require('./routes/toggle');
-app.use('/', toggleRoutes);
-const reviewRoutes = require('./routes/review');
-app.use('/', reviewRoutes);
-
-
-
+// Login User
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const [users] = await pool.query('SELECT id, username, email, password FROM users WHERE email = ?', [email]);
+        if (users.length > 0 && (await bcrypt.compare(password, users[0].password))) {
+            req.session.user = { id: users[0].id, username: users[0].username, email: users[0].email };
+            return res.redirect('/dashboard');
+        }
+        res.status(401).send('Invalid credentials');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error logging in');
+    }
+});
 
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Movie Catalog API' });
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    res.render('dashboard', { user: req.session.user });
+});
+
+// Logout
+app.post('/logout', (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/login');
+    });
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${process.env.BACKEND_URL}`);
+    console.log(`Admin Server running on port ${PORT}`);
 });
