@@ -21,13 +21,17 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
-const homeRoutes = require("./routes/homeRoutes");
-const authRoutes = require("./routes/authRoutes");
-const udRoutes = require("./routes/userdetailsRoutes");
+const homeRoutes = require("./routes/home");
+const authRoutes = require("./routes/auth");
+const udRoutes = require("./routes/userAnalytics");
+const dbmRoutes = require("./routes/dbm");
+const genreRoutes = require('./routes/genre');
 
 app.use("/", homeRoutes);
 app.use("/", authRoutes);
 app.use("/", udRoutes);
+app.use("/", dbmRoutes);
+app.use('/genres', genreRoutes);
 
 const PORT = process.env.PORT || 5109;
 app.listen(PORT, () => console.log(`Admin panel running at: http://localhost:${PORT}`));

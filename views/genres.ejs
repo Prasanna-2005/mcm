@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Genres</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-xl w-full bg-white p-6 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">🎭 Manage Genres</h2>
+
+        <!-- Add Genre -->
+        <div class="flex gap-2">
+            <input id="genreName" type="text" placeholder="Enter genre" class="w-full px-3 py-2 border rounded-lg">
+            <button onclick="addGenre()"
+                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                ➕ Add
+            </button>
+        </div>
+
+        <!-- Genre List -->
+        <ul id="genreList" class="mt-4 space-y-2"></ul>
+    </div>
+
+    <script>
+        async function fetchGenres() {
+            const res = await fetch('/genres');
+            const genres = await res.json();
+            const list = document.getElementById("genreList");
+            list.innerHTML = genres.map(genre => `
+                <li class="flex justify-between p-2 bg-gray-200 rounded-lg shadow">
+                    <span>${genre.name}</span>
+                    <button onclick="deleteGenre(${genre.id})" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                        ❌
+                    </button>
+                </li>
+            `).join('');
+        }
+
+        async function addGenre() {
+            const name = document.getElementById("genreName").value.trim();
+            if (!name) return alert("Enter a genre name!");
+
+            const res = await fetch('/genres/add', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name })
+            });
+
+            if (res.ok) {
+                document.getElementById("genreName").value = "";
+                fetchGenres();
+            } else {
+                alert("Failed to add genre! It might already exist.");
+            }
+        }
+
+        async function deleteGenre(id) {
+            if (!confirm("Are you sure?")) return;
+
+            await fetch(`/genres/delete/${id}`, { method: "DELETE" });
+            fetchGenres();
+        }
+
+        fetchGenres(); // Load genres on page load
+    </script>
+</body>
+
+</html>

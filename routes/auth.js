@@ -4,7 +4,7 @@ const db = require("../config/db");
 const router = express.Router();
 
 
-
+//********************************************************************* */
 const isAuthenticated = (req, res, next) => {
   if (req.session && req.session.user) {
       return next(); // User is authenticated, proceed
@@ -12,21 +12,12 @@ const isAuthenticated = (req, res, next) => {
   res.redirect("/login"); // Redirect to login if not authenticated
 };
 
-
+//********************************************************************* */
 
 // Register Page
 router.get("/register", (req, res) => {
   res.render("register", { title: "Register" });
 });
-
-// Login Page
-router.get("/login", (req, res) => {
-  res.render("login", { title: "Login" });
-});
-
-
-
-
 
 
 // Register User API
@@ -60,8 +51,14 @@ router.post("/register", async (req, res) => {
 });
 
 
+//********************************************************************* */
 
 
+
+// Login Page
+router.get("/login", (req, res) => {
+  res.render("login", { title: "Login" });
+});
 
 
 router.post("/login", async (req, res) => {
@@ -99,23 +96,24 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.get("/dashboard", isAuthenticated,(req, res) => {
-  if (!req.session.user) {
-    return res.redirect("/login"); // Redirect to login if not logged in
-  }
-  res.render("dashboard", { user: req.session.user });
+
+//********************************************************************* */
+//LOGOUT 
+router.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+      if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ error: "Error logging out" });
+      }
+      res.clearCookie("connect.sid"); 
+      res.redirect("/"); // Redirect to logout page
+  });
 });
 
+//********************************************************************* */
 
-router.get("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("Logout error:", err);
-            return res.status(500).json({ error: "Error logging out" });
-        }
-        res.clearCookie("connect.sid"); // Clear session cookie
-        res.redirect("/"); // Redirect to logout page
-    });
+router.get("/dashboard", isAuthenticated,(req, res) => {
+  res.render("dashboard", { user: req.session.user });
 });
 
 

@@ -1,22 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../config/db"); // Adjust based on your DB connection setup
+const db = require("../config/db");
 
-
+//************************************************************************************** */
 const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.user) {
         return next(); // User is authenticated, proceed
     }
     res.redirect("/login"); // Redirect to login if not authenticated
   };
+//************************************************************************************** */
+
 
 
 router.get("/view-users",isAuthenticated, async (req, res) => {
     try {
         const [users] = await db.query("SELECT id, username, email,role FROM users");
-        res.render('view-users', {
+        res.render('userAnalytics', {
             users,
-            currentUser: req.session.user // Pass logged-in user
+            currentUser: req.session.user 
         });
     } catch (error) {
         console.error(error);
@@ -24,6 +26,8 @@ router.get("/view-users",isAuthenticated, async (req, res) => {
     }
 });
 
+
+//************************************************************************************** */
 // Delete user by ID
 router.delete("/users/delete/:id", isAuthenticated,async (req, res) => {
     const userId = req.params.id;
@@ -49,6 +53,6 @@ router.delete("/users/delete/:id", isAuthenticated,async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-
+//************************************************************************************** */
 
 module.exports = router;

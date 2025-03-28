@@ -1,3 +1,4 @@
+// LOGIN - REGISTER
 document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("registerForm");
 
@@ -39,4 +40,64 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+//****************************************************************************************** */
+// DB-MANAGER
+document.addEventListener("DOMContentLoaded", fetchTables);
 
+function fetchTables() {
+    fetch('/get-tables')
+        .then(response => response.json())
+        .then(data => {
+            const tableList = document.getElementById('tableList');
+            tableList.innerHTML = ''; // Clear existing content
+            data.tables.forEach(table => {
+                tableList.innerHTML += `
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="table-checkbox" value="${table}">
+                        <span>${table}</span>
+                    </label>
+                `;
+            });
+        })
+        .catch(error => console.error('Error fetching tables:', error));
+}
+
+function fetchTableData() {
+    const selectedTables = Array.from(document.querySelectorAll('.table-checkbox:checked'))
+        .map(cb => cb.value);
+    if (selectedTables.length === 0) {
+        alert("Please select at least one table.");
+        return;
+    }
+
+    fetch('/get-table-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tables: selectedTables })
+    })
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById('tableDataContainer');
+            container.innerHTML = '';
+            data.forEach(tableData => {
+                container.innerHTML += `
+                <h3 class="text-lg font-bold mt-4">${tableData.table}</h3>
+                <table class="w-full border-collapse border border-gray-300 mt-2">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            ${tableData.columns.map(col => `<th class="border p-2">${col}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableData.rows.map(row => `
+                            <tr class="bg-white border">
+                                ${Object.values(row).map(value => `<td class="border p-2">${value}</td>`).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            });
+        })
+        .catch(error => console.error('Error fetching table data:', error));
+}
