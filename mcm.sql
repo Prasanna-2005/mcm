@@ -25,14 +25,14 @@ DROP TABLE IF EXISTS `activity_logs`;
 CREATE TABLE `activity_logs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned NOT NULL,
-  `action_type` enum('update','delete') NOT NULL,
+  `action_type` enum('insert','update','delete') NOT NULL,
   `entity_type` varchar(50) NOT NULL,
   `entity_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `activity_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `activity_logs` (
 
 LOCK TABLES `activity_logs` WRITE;
 /*!40000 ALTER TABLE `activity_logs` DISABLE KEYS */;
-INSERT INTO `activity_logs` VALUES (1,1,'delete','movie',2,'2025-03-22 12:59:28'),(2,1,'update','movie',2,'2025-03-23 16:44:05'),(3,1,'update','movie',3,'2025-03-23 16:44:05'),(4,1,'update','movie',4,'2025-03-23 16:44:05'),(5,1,'update','movie',2,'2025-03-23 16:45:46'),(6,1,'update','movie',3,'2025-03-23 16:45:46'),(7,1,'update','movie',4,'2025-03-23 16:45:46'),(8,1,'update','movie',1,'2025-03-23 17:29:52'),(9,1,'update','movie',1,'2025-03-23 17:29:54'),(10,1,'update','review',1,'2025-03-23 17:29:54'),(11,1,'update','movie',1,'2025-03-23 17:29:55'),(12,1,'update','review',1,'2025-03-23 17:29:55'),(13,1,'update','movie',1,'2025-03-23 17:29:56'),(14,1,'update','review',1,'2025-03-23 17:29:56'),(15,1,'update','movie',1,'2025-03-23 17:30:02'),(16,1,'update','review',1,'2025-03-23 17:30:02'),(17,1,'delete','review',1,'2025-03-23 17:33:59'),(18,1,'update','movie',1,'2025-03-23 17:36:23'),(19,1,'update','review',2,'2025-03-23 17:36:43'),(20,1,'update','movie',1,'2025-03-23 17:37:06'),(21,1,'update','review',2,'2025-03-23 17:37:06'),(22,1,'update','movie',1,'2025-03-23 17:37:13'),(23,1,'update','review',2,'2025-03-23 17:37:13'),(24,1,'update','movie',1,'2025-03-23 17:37:18'),(25,1,'update','review',2,'2025-03-23 17:37:18'),(26,1,'update','movie',1,'2025-03-23 17:39:11'),(27,1,'update','review',2,'2025-03-23 17:39:11'),(28,1,'delete','review',2,'2025-03-23 17:40:43'),(29,1,'update','movie',1,'2025-03-23 17:45:39'),(30,1,'delete','review',3,'2025-03-23 17:46:40'),(31,1,'update','movie',1,'2025-03-23 17:46:40'),(32,1,'update','movie',2,'2025-03-23 17:48:00'),(33,1,'update','movie',2,'2025-03-23 17:48:09'),(34,1,'update','review',4,'2025-03-23 17:48:09');
+INSERT INTO `activity_logs` VALUES (1,1,'insert','movie',1,'2025-03-27 05:56:39'),(2,1,'insert','movie',2,'2025-03-27 05:56:39'),(3,1,'insert','movie',3,'2025-03-27 05:56:39'),(4,1,'insert','movie',4,'2025-03-27 05:56:39');
 /*!40000 ALTER TABLE `activity_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +57,7 @@ CREATE TABLE `genres` (
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,36 +66,8 @@ CREATE TABLE `genres` (
 
 LOCK TABLES `genres` WRITE;
 /*!40000 ALTER TABLE `genres` DISABLE KEYS */;
-INSERT INTO `genres` VALUES (1,'Action'),(2,'Adventure'),(3,'Animation'),(4,'Biography'),(5,'Comedy'),(6,'Crime'),(27,'Dark Comedy'),(7,'Documentary'),(8,'Drama'),(26,'Experimental'),(9,'Family'),(10,'Fantasy'),(11,'History'),(12,'Horror'),(22,'Kids'),(13,'Music'),(14,'Musical'),(15,'Mystery'),(25,'Neo-Noir'),(24,'Psychological'),(16,'Romance'),(17,'Sci-Fi'),(18,'Sport'),(23,'Superhero'),(19,'Thriller'),(20,'War'),(21,'Western');
+INSERT INTO `genres` VALUES (1,'Action'),(2,'Adventure'),(15,'Animation'),(14,'Biography'),(10,'Comedy'),(3,'Crime'),(22,'Crime Drama'),(27,'Cyberpunk'),(29,'Disaster'),(17,'Documentary'),(4,'Drama'),(23,'Epic'),(7,'Fantasy'),(16,'Historical'),(9,'Horror'),(13,'Musical'),(6,'Mystery'),(24,'Mystery Thriller'),(25,'Political Thriller'),(30,'Post-Apocalyptic'),(19,'Psychological Thriller'),(11,'Romance'),(8,'Science Fiction'),(18,'Sports'),(28,'Spy'),(20,'Superhero'),(26,'Survival'),(5,'Thriller'),(12,'War'),(21,'Western');
 /*!40000 ALTER TABLE `genres` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `liked_movies`
---
-
-DROP TABLE IF EXISTS `liked_movies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `liked_movies` (
-  `user_id` bigint unsigned NOT NULL,
-  `movie_id` bigint unsigned NOT NULL,
-  PRIMARY KEY (`user_id`,`movie_id`),
-  KEY `movie_id` (`movie_id`),
-  KEY `idx_user_id` (`user_id`),
-  CONSTRAINT `liked_movies_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `liked_movies_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `liked_movies`
---
-
-LOCK TABLES `liked_movies` WRITE;
-/*!40000 ALTER TABLE `liked_movies` DISABLE KEYS */;
-INSERT INTO `liked_movies` VALUES (1,1),(1,4);
-/*!40000 ALTER TABLE `liked_movies` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -112,9 +84,8 @@ CREATE TABLE `movie_cast_crew` (
   `character_name` varchar(255) DEFAULT NULL,
   `role` enum('actor','actress','director','writer','producer') NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_movie_id` (`movie_id`),
-  KEY `idx_person_id` (`person_id`),
-  KEY `idx_role` (`role`),
+  KEY `movie_id` (`movie_id`),
+  KEY `person_id` (`person_id`),
   CONSTRAINT `movie_cast_crew_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE,
   CONSTRAINT `movie_cast_crew_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `people` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -126,7 +97,7 @@ CREATE TABLE `movie_cast_crew` (
 
 LOCK TABLES `movie_cast_crew` WRITE;
 /*!40000 ALTER TABLE `movie_cast_crew` DISABLE KEYS */;
-INSERT INTO `movie_cast_crew` VALUES (1,1,1,'Vikram','actor'),(2,1,2,'Sandhanam','actor'),(3,1,3,'Agent Amar','actor'),(4,2,4,'Komaram Bheem','actor'),(5,2,5,'Alluri Sitarama Raju','actor'),(6,2,6,NULL,'director'),(7,3,7,'Georgekutty','actor'),(8,3,8,NULL,'director'),(9,4,9,'Shiva','actor'),(10,4,9,NULL,'director');
+INSERT INTO `movie_cast_crew` VALUES (1,1,1,'Agent Amar','actor'),(2,1,2,NULL,'director'),(3,2,3,'Komaram Bheem','actor'),(4,2,4,'Alluri Sitarama Raju','actor'),(5,2,5,NULL,'director'),(6,2,6,'Special Appearance','actor'),(7,3,7,'Georgekutty','actor'),(8,3,8,NULL,'director'),(9,4,9,'Shiva','actor'),(10,4,9,NULL,'director');
 /*!40000 ALTER TABLE `movie_cast_crew` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,7 +124,7 @@ CREATE TABLE `movie_genres` (
 
 LOCK TABLES `movie_genres` WRITE;
 /*!40000 ALTER TABLE `movie_genres` DISABLE KEYS */;
-INSERT INTO `movie_genres` VALUES (2,1),(4,1),(2,2),(3,8),(4,8),(3,19);
+INSERT INTO `movie_genres` VALUES (1,1),(2,1),(4,1),(2,2),(1,3),(3,3),(4,4),(1,5),(3,5),(3,6),(4,7),(2,12);
 /*!40000 ALTER TABLE `movie_genres` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,8 +144,8 @@ CREATE TABLE `movies` (
   `language` varchar(50) DEFAULT NULL,
   `country` varchar(100) DEFAULT NULL,
   `average_rating` decimal(3,1) DEFAULT '0.0',
-  `created_by` bigint unsigned DEFAULT NULL,
   `rating_count` int unsigned DEFAULT '0',
+  `created_by` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `created_by` (`created_by`),
   KEY `idx_title` (`title`),
@@ -189,9 +160,29 @@ CREATE TABLE `movies` (
 
 LOCK TABLES `movies` WRITE;
 /*!40000 ALTER TABLE `movies` DISABLE KEYS */;
-INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',10.0,1,1),(2,'RRR',2022,187,'A fearless warrior and a British officer become friends, only to find themselves on opposite sides of a revolution.','Telugu','India',9.0,1,1),(3,'Drishyam',2013,160,'A man goes to great lengths to protect his family after they become involved in a crime.','Malayalam','India',8.5,1,0),(4,'Kantara',2022,148,'A story that blends folklore, action, and a man’s connection with nature, set against the backdrop of coastal Karnataka.','Kannada','India',8.3,1,0);
+INSERT INTO `movies` VALUES (1,'Vikram',2022,175,'A special investigator discovers a case of serial killings is not what it seems to be, and leading down this path is only going to end in a war between everyone involved.','Tamil','India',10.0,1,1),(2,'RRR',2022,187,'A fearless warrior and a British officer become friends, only to find themselves on opposite sides of a revolution.','Telugu','India',9.0,1,1),(3,'Drishyam',2013,160,'A man goes to great lengths to protect his family after they become involved in a crime.','Malayalam','India',8.5,0,1),(4,'Kantara',2022,148,'A story that blends folklore, action, and a man’s connection with nature, set against the backdrop of coastal Karnataka.','Kannada','India',8.3,0,1);
 /*!40000 ALTER TABLE `movies` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_movie_insert` AFTER INSERT ON `movies` FOR EACH ROW BEGIN
+    IF NEW.created_by IS NOT NULL THEN
+        INSERT INTO activity_logs (user_id, action_type, entity_type, entity_id)
+        VALUES (NEW.created_by, 'insert', 'movie', NEW.id);
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -243,8 +234,7 @@ DROP TABLE IF EXISTS `people`;
 CREATE TABLE `people` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_name` (`name`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,7 +244,7 @@ CREATE TABLE `people` (
 
 LOCK TABLES `people` WRITE;
 /*!40000 ALTER TABLE `people` DISABLE KEYS */;
-INSERT INTO `people` VALUES (3,'Fahadh Faasil'),(8,'Jeethu Joseph'),(1,'Kamal Haasan'),(7,'Mohanlal'),(4,'N. T. Rama Rao Jr.'),(5,'Ram Charan'),(9,'Rishab Shetty'),(6,'S. S. Rajamouli'),(2,'Vijay Sethupathi');
+INSERT INTO `people` VALUES (1,'Kamal Haasan'),(2,'Lokesh Kanagaraj'),(3,'N.T. Rama Rao Jr.'),(4,'Ram Charan'),(5,'S. S. Rajamouli'),(6,'Ajay Devgn'),(7,'Mohanlal'),(8,'Jeethu Joseph'),(9,'Rishab Shetty');
 /*!40000 ALTER TABLE `people` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -298,13 +288,12 @@ CREATE TABLE `reviews` (
   `content` text NOT NULL,
   `likes_count` int unsigned DEFAULT '0',
   `dislikes_count` int unsigned DEFAULT '0',
-  `rating` int unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx_movie_id` (`movie_id`),
   KEY `idx_user_id` (`user_id`),
   CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE,
   CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,9 +302,26 @@ CREATE TABLE `reviews` (
 
 LOCK TABLES `reviews` WRITE;
 /*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
-INSERT INTO `reviews` VALUES (4,2,1,'Mass Movie',0,0,9);
 /*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `after_review_insert` AFTER INSERT ON `reviews` FOR EACH ROW BEGIN
+    INSERT INTO activity_logs (user_id, action_type, entity_type, entity_id)
+    VALUES (NEW.user_id, 'insert', 'review', NEW.id);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -354,27 +360,30 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Table structure for table `sessions`
+-- Table structure for table `user_favorites`
 --
 
-DROP TABLE IF EXISTS `sessions`;
+DROP TABLE IF EXISTS `user_favorites`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessions` (
-  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `expires` int unsigned NOT NULL,
-  `data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  PRIMARY KEY (`session_id`)
+CREATE TABLE `user_favorites` (
+  `user_id` bigint unsigned NOT NULL,
+  `movie_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`user_id`,`movie_id`),
+  KEY `movie_id` (`movie_id`),
+  KEY `idx_user_id` (`user_id`),
+  CONSTRAINT `user_favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_favorites_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sessions`
+-- Dumping data for table `user_favorites`
 --
 
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+LOCK TABLES `user_favorites` WRITE;
+/*!40000 ALTER TABLE `user_favorites` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_favorites` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -389,12 +398,11 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','user') DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
-  KEY `idx_username` (`username`),
   KEY `idx_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -403,7 +411,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'testuser','test@example.com','$2b$10$hmKMk0D2WSXWhxT/enmIOOnZ/1Eo3wUvBS73K21Ua9CRYaAXl3Mwu','user'),(2,'Prasanna','hello@gmail.com','$2b$10$TnyGLynslqndLVFYlpc6VOvZ/YZD5DFtKp/AsphegD/q8hzwXlA.S','user'),(5,'Prasanna','test@gmail.com','$2b$10$VLw24yoZnuKBoo./JwqsPOZ2GHAVxGjBvHRNIKQdpm.40EF9pDiN2','admin');
+INSERT INTO `users` VALUES (1,'tester1','test@gmail.comm','$2b$10$I/8Jn6RzsZqc6bY7aHwVBu5aPZWJEFn6u9N3iSOzhfW4uvRFAWdra','admin');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -431,7 +439,6 @@ CREATE TABLE `watchlists` (
 
 LOCK TABLES `watchlists` WRITE;
 /*!40000 ALTER TABLE `watchlists` DISABLE KEYS */;
-INSERT INTO `watchlists` VALUES (1,1),(1,2);
 /*!40000 ALTER TABLE `watchlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -444,4 +451,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-26 23:56:27
+-- Dump completed on 2025-03-27 11:39:47
