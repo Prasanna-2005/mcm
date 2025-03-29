@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f9f9f9;
+}
+
+/* Navbar - Full Width, Dark Background */
+.custom-navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background-color: #212529;
+    padding: 10px 20px;
+}
+
+/* CineHive Branding */
+.cinehive-brand {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Profile Button - White */
+
+
+/* Logout Button - Red */
+.logout-btn {
+    margin-left: 10px;
+    background-color:red;
+    border-color: red;
+}
+
+/* Content Wrapper - Adjusted for Fixed Navbar */
+.content-wrapper {
+    display: flex;
+    margin-top: 56px; /* Adjust margin to avoid overlap with navbar */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-links li {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.nav-links li:hover,
+.nav-links .active {
+    background: #eee;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    margin: 20px 0;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Movies Grid */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.loading-text {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+    margin-top: 20px;
+}

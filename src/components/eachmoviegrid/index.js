@@ -15,7 +15,7 @@ class Eachmovie extends Component {
                         <h3 className="title">{title}</h3>
                         <p className="rating">⭐ {average_rating}</p>
                     </div>
-                </Link>pip
+                </Link>
                 {/* Like & Watchlist Buttons */}
                 <div className="actions">
                     <button 
