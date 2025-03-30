@@ -6,12 +6,14 @@ const bodyParser = require("body-parser");
 const app = express();
 const session = require("express-session");
 
-app.use(session({
-  secret: "12345",
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } 
-}));
+app.use(
+  session({
+    secret: "12345",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 
 // Middleware
 app.set("view engine", "ejs");
@@ -25,13 +27,17 @@ const homeRoutes = require("./routes/home");
 const authRoutes = require("./routes/auth");
 const udRoutes = require("./routes/userAnalytics");
 const dbmRoutes = require("./routes/dbm");
-const genreRoutes = require('./routes/genre');
+const genreRoutes = require("./routes/genre");
+const movieRoutes = require("./routes/movie");
 
 app.use("/", homeRoutes);
 app.use("/", authRoutes);
 app.use("/", udRoutes);
 app.use("/", dbmRoutes);
-app.use('/genres', genreRoutes);
+app.use("/genres", genreRoutes);
+app.use("/", movieRoutes);
 
 const PORT = process.env.PORT || 5109;
-app.listen(PORT, () => console.log(`Admin panel running at: http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Admin panel running at: http://localhost:${PORT}`)
+);
