@@ -1,161 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage People</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
 
-  <body class="bg-gray-100 min-h-screen">
-    <nav
-      class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg"
-    >
-      <a href="/dashboard" class="text-2xl font-bold">🚀 Admin Dashboard</a>
-      <a href="/logout" class="hover:underline">Logout</a>
-    </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage People</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-    <div class="flex items-center justify-center py-10">
-      <div class="max-w-xl w-full bg-white p-6 rounded-xl shadow-lg">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">👪 Manage People</h2>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
+    <a href="/dashboard" class="text-2xl font-bold">🚀 Admin Dashboard</a>
+    <a href="/logout" class="hover:underline">Logout</a>
+  </nav>
 
-        <!-- Add Person -->
-        <div class="flex gap-2 mb-6">
-          <input
-            id="personName"
-            type="text"
-            placeholder="Enter person name"
-            class="w-full px-3 py-2 border rounded-lg"
-          />
-          <button
-            onclick="addPerson()"
-            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-          >
-            ➕ Add
-          </button>
+  <div class="flex items-center justify-center py-10">
+    <div class="max-w-xl w-full bg-white p-6 rounded-xl shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">👪 Manage Crew/Cast People</h2>
+
+      <!-- Add Person -->
+      <div class="flex gap-2 mb-6">
+        <input id="personName" type="text" placeholder="Enter person name" class="w-full px-3 py-2 border rounded-lg" />
+        <button onclick="addPerson()"
+          class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+          ➕ Add
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="mb-6">
+        <label for="searchPerson" class="block text-sm font-medium text-gray-700 mb-1">Search Person:</label>
+        <div class="flex gap-2">
+          <input id="searchPerson" type="text" placeholder="Search by name..."
+            class="w-full px-3 py-2 border rounded-lg" oninput="searchPeople()" />
         </div>
-
-        <!-- Search -->
-        <div class="mb-6">
-          <label
-            for="searchPerson"
-            class="block text-sm font-medium text-gray-700 mb-1"
-            >Search Person:</label
-          >
-          <div class="flex gap-2">
-            <input
-              id="searchPerson"
-              type="text"
-              placeholder="Search by name..."
-              class="w-full px-3 py-2 border rounded-lg"
-              oninput="searchPeople()"
-            />
-          </div>
-          <div id="searchResults" class="mt-2 bg-gray-50 rounded p-2 hidden">
-            <!-- Search results will appear here -->
-          </div>
+        <div id="searchResults" class="mt-2 bg-gray-50 rounded p-2 hidden">
+          <!-- Search results will appear here -->
         </div>
+      </div>
 
-        <!-- People List -->
-        <h3 class="text-lg font-semibold mb-2">All People</h3>
-        <ul id="peopleList" class="mt-2 space-y-2">
-          <% people.forEach(person => { %>
+      <!-- People List -->
+      <h3 class="text-lg font-semibold mb-2">All People</h3>
+      <ul id="peopleList" class="mt-2 space-y-2">
+        <% people.forEach(person=> { %>
           <li class="flex justify-between p-2 bg-gray-200 rounded-lg shadow">
-            <span><%= person.name %></span>
-            <button
-              onclick="deletePerson(<%= person.id %>)"
-              class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-            >
+            <span>
+              <%= person.name %>
+            </span>
+            <button onclick="deletePerson(<%= person.id %>)"
+              class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
               ❌
             </button>
           </li>
           <% }); %>
-        </ul>
-      </div>
+      </ul>
     </div>
+  </div>
 
-    <script>
-      async function fetchPeople() {
-        try {
-          // Refresh the page to get updated people list
-          window.location.reload();
-        } catch (error) {
-          console.error("Error fetching people:", error);
-        }
+  <script>
+    async function fetchPeople() {
+      try {
+        // Refresh the page to get updated people list
+        window.location.reload();
+      } catch (error) {
+        console.error("Error fetching people:", error);
       }
+    }
 
-      async function addPerson() {
-        const name = document.getElementById("personName").value.trim();
-        if (!name) return alert("Enter a person name!");
+    async function addPerson() {
+      const name = document.getElementById("personName").value.trim();
+      if (!name) return alert("Enter a person name!");
 
-        try {
-          const res = await fetch("/people/add", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name }),
-          });
+      try {
+        const res = await fetch("/people/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name }),
+        });
 
-          if (res.ok) {
-            document.getElementById("personName").value = "";
-            fetchPeople();
-          } else {
-            const error = await res.json();
-            alert(
-              error.error || "Failed to add person! They might already exist."
-            );
-          }
-        } catch (error) {
-          console.error("Error adding person:", error);
-          alert("An error occurred while adding the person.");
+        if (res.ok) {
+          document.getElementById("personName").value = "";
+          fetchPeople();
+        } else {
+          const error = await res.json();
+          alert(
+            error.error || "Failed to add person! They might already exist."
+          );
         }
+      } catch (error) {
+        console.error("Error adding person:", error);
+        alert("An error occurred while adding the person.");
       }
+    }
 
-      async function deletePerson(id) {
-        if (
-          !confirm(
-            "Are you sure? This may cause issues if this person is associated with movies."
-          )
+    async function deletePerson(id) {
+      if (
+        !confirm(
+          "Are you sure? This may cause issues if this person is associated with movies."
         )
-          return;
+      )
+        return;
 
-        try {
-          const res = await fetch(`/people/delete/${id}`, { method: "DELETE" });
-          if (res.ok) {
-            fetchPeople();
-          } else {
-            const error = await res.json();
-            alert(error.error || "Failed to delete person!");
-          }
-        } catch (error) {
-          console.error("Error deleting person:", error);
-          alert("An error occurred while deleting the person.");
+      try {
+        const res = await fetch(`/people/delete/${id}`, { method: "DELETE" });
+        if (res.ok) {
+          fetchPeople();
+        } else {
+          const error = await res.json();
+          alert(error.error || "Failed to delete person!");
         }
+      } catch (error) {
+        console.error("Error deleting person:", error);
+        alert("An error occurred while deleting the person.");
+      }
+    }
+
+    let searchTimeout;
+    async function searchPeople() {
+      const query = document.getElementById("searchPerson").value.trim();
+      const resultsContainer = document.getElementById("searchResults");
+
+      clearTimeout(searchTimeout);
+
+      if (!query) {
+        resultsContainer.classList.add("hidden");
+        return;
       }
 
-      let searchTimeout;
-      async function searchPeople() {
-        const query = document.getElementById("searchPerson").value.trim();
-        const resultsContainer = document.getElementById("searchResults");
+      searchTimeout = setTimeout(async () => {
+        try {
+          const res = await fetch(
+            `/people/search?query=${encodeURIComponent(query)}`
+          );
+          if (res.ok) {
+            const people = await res.json();
 
-        clearTimeout(searchTimeout);
-
-        if (!query) {
-          resultsContainer.classList.add("hidden");
-          return;
-        }
-
-        searchTimeout = setTimeout(async () => {
-          try {
-            const res = await fetch(
-              `/people/search?query=${encodeURIComponent(query)}`
-            );
-            if (res.ok) {
-              const people = await res.json();
-
-              if (people.length > 0) {
-                resultsContainer.innerHTML = people
-                  .map(
-                    (person) => `
+            if (people.length > 0) {
+              resultsContainer.innerHTML = people
+                .map(
+                  (person) => `
                   <div class="flex justify-between items-center p-2 hover:bg-gray-200 rounded">
                     <span>${person.name}</span>
                     <div>
@@ -167,22 +150,23 @@
                     </div>
                   </div>
                 `
-                  )
-                  .join("");
-                resultsContainer.classList.remove("hidden");
-              } else {
-                resultsContainer.innerHTML =
-                  '<div class="p-2 text-gray-600">No results found</div>';
-                resultsContainer.classList.remove("hidden");
-              }
+                )
+                .join("");
+              resultsContainer.classList.remove("hidden");
+            } else {
+              resultsContainer.innerHTML =
+                '<div class="p-2 text-gray-600">No results found</div>';
+              resultsContainer.classList.remove("hidden");
             }
-          } catch (error) {
-            console.error("Error searching people:", error);
           }
-        }, 300);
-      }
+        } catch (error) {
+          console.error("Error searching people:", error);
+        }
+      }, 300);
+    }
 
-      // Removed the setPersonName function as it's no longer needed
-    </script>
-  </body>
+    // Removed the setPersonName function as it's no longer needed
+  </script>
+</body>
+
 </html>
