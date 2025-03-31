@@ -29,6 +29,7 @@ const udRoutes = require("./routes/userAnalytics");
 const dbmRoutes = require("./routes/dbm");
 const genreRoutes = require("./routes/genre");
 const movieRoutes = require("./routes/movie");
+const peopleRoutes = require('./routes/people');
 
 app.use("/", homeRoutes);
 app.use("/", authRoutes);
@@ -36,6 +37,7 @@ app.use("/", udRoutes);
 app.use("/", dbmRoutes);
 app.use("/genres", genreRoutes);
 app.use("/", movieRoutes);
+app.use('/people', peopleRoutes);
 
 const PORT = process.env.PORT || 5109;
 app.listen(PORT, () =>

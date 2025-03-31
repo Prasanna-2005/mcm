@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>View Movies</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .cell-scrollable {
+        max-width: 200px;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .synopsis-cell {
+        max-width: 300px;
+        overflow-x: auto;
+      }
+
+      .casts-cell {
+        max-width: 250px;
+        overflow-x: auto;
+      }
+    </style>
   </head>
 
   <body class="bg-gray-100 min-h-screen">
@@ -42,16 +59,16 @@
           <thead class="sticky top-0">
             <tr class="bg-gray-200">
               <th class="border p-2">ID</th>
-              <th class="border p-2">Title</th>
+              <th class="border p-2 cell-scrollable">Title</th>
               <th class="border p-2">Release Year</th>
               <th class="border p-2">Runtime</th>
-              <th class="border p-2 w-64">Synopsis</th>
-              <th class="border p-2">Language</th>
-              <th class="border p-2">Country</th>
+              <th class="border p-2 synopsis-cell">Synopsis</th>
+              <th class="border p-2 cell-scrollable">Language</th>
+              <th class="border p-2 cell-scrollable">Country</th>
               <th class="border p-2">Rating</th>
-              <th class="border p-2">Created By</th>
-              <th class="border p-2">Genres</th>
-              <th class="border p-2 w-64">Casts</th>
+              <th class="border p-2 cell-scrollable">Created By</th>
+              <th class="border p-2 cell-scrollable">Genres</th>
+              <th class="border p-2 casts-cell">Casts</th>
               <th class="border p-2">Actions</th>
             </tr>
           </thead>
@@ -62,18 +79,24 @@
               data-movie-id="<%= movie.id %>"
             >
               <td class="border p-2"><%= movie.id %></td>
-              <td class="border p-2 font-medium"><%= movie.title %></td>
+              <td class="border p-2 font-medium cell-scrollable">
+                <%= movie.title %>
+              </td>
               <td class="border p-2"><%= movie.release_year%></td>
               <td class="border p-2">
                 <%= movie.runtime ? movie.runtime + ' min' : 'N/A' %>
               </td>
-              <td class="border p-2 max-w-xs overflow-hidden">
+              <td class="border p-2 synopsis-cell">
                 <div class="line-clamp-2" title="<%= movie.synopsis || '' %>">
                   <%= movie.synopsis || 'No synopsis available' %>
                 </div>
               </td>
-              <td class="border p-2"><%= movie.language || 'N/A' %></td>
-              <td class="border p-2"><%= movie.country || 'N/A' %></td>
+              <td class="border p-2 cell-scrollable">
+                <%= movie.language || 'N/A' %>
+              </td>
+              <td class="border p-2 cell-scrollable">
+                <%= movie.country || 'N/A' %>
+              </td>
               <td class="border p-2">
                 <% if (movie.average_rating && parseFloat(movie.average_rating)
                 > 0) { %>
@@ -84,8 +107,10 @@
                 <span class="text-gray-500">No ratings</span>
                 <% } %>
               </td>
-              <td class="border p-2"><%= movie.created_by_user || 'N/A' %></td>
-              <td class="border p-2">
+              <td class="border p-2 cell-scrollable">
+                <%= movie.created_by_user || 'N/A' %>
+              </td>
+              <td class="border p-2 cell-scrollable">
                 <div class="flex flex-wrap gap-1">
                   <% if (movie.genres && movie.genres.length > 0) { %> <%
                   movie.genres.forEach(genre => { %>
@@ -99,7 +124,7 @@
                   <% } %>
                 </div>
               </td>
-              <td class="border p-2">
+              <td class="border p-2 casts-cell">
                 <div class="flex flex-col gap-1">
                   <% if (movie.casts && movie.casts.length > 0) { %> <%
                   movie.casts.forEach(cast => { %>
@@ -117,6 +142,12 @@
                 </div>
               </td>
               <td class="border p-2 text-center">
+                <a
+                  href="/edit-movie/<%= movie.id %>"
+                  class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors mr-4"
+                >
+                  Edit
+                </a>
                 <button
                   class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
                   onclick="confirmDelete(<%= movie.id %>)"

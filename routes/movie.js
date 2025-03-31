@@ -212,16 +212,155 @@ router.delete("/delete-movie/:id", isAuthenticated, async (req, res) => {
   }
 });
 
-// // Add this to ensure the router is properly registered to handle the delete route
-// // This ensures Express can find the delete route even if it's called from the root path
-// router.use((req, res, next) => {
-//   // Check if the request is for the delete movie endpoint
-//   if (req.method === "DELETE" && req.url.startsWith("/delete-movie/")) {
-//     const movieId = req.url.split("/").pop();
-//     req.params = { id: movieId };
-//     return router.handle(req, res, next);
-//   }
-//   next();
-// });
+// Get route for editing a movie
+router.get("/edit-movie/:id", isAuthenticated, async (req, res) => {
+  const connection = await db.getConnection();
+
+  try {
+    const movieId = req.params.id;
+
+    // Get movie details
+    const [movies] = await connection.query(
+      "SELECT * FROM movies WHERE id = ?",
+      [movieId]
+    );
+
+    if (movies.length === 0) {
+      return res.status(404).send("Movie not found");
+    }
+
+    const movie = movies[0];
+
+    // Get genres for the movie
+    const [movieGenres] = await connection.query(
+      "SELECT genre_id FROM movie_genres WHERE movie_id = ?",
+      [movieId]
+    );
+
+    // Get all available genres
+    const [genres] = await connection.query("SELECT * FROM genres");
+
+    // Get cast and crew for the movie
+    const [movieCasts] = await connection.query(
+      "SELECT * FROM movie_cast_crew WHERE movie_id = ?",
+      [movieId]
+    );
+
+    // Get all available people
+    const [people] = await connection.query("SELECT * FROM people");
+
+    res.render("editMovie", {
+      movie,
+      movieGenres: movieGenres.map((g) => g.genre_id),
+      movieCasts,
+      genres,
+      people,
+      currentUser: req.session.user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching movie data: " + error.message);
+  } finally {
+    connection.release();
+  }
+});
+
+// Post route for updating a movie
+router.post("/update-movie/:id", isAuthenticated, async (req, res) => {
+  const connection = await db.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const movieId = req.params.id;
+    const {
+      title,
+      release_year,
+      runtime,
+      synopsis,
+      language,
+      country,
+      genres,
+      casts,
+    } = req.body;
+
+    // Update movie in the movies table
+    await connection.query(
+      "UPDATE movies SET title = ?, release_year = ?, runtime = ?, synopsis = ?, language = ?, country = ? WHERE id = ?",
+      [
+        title,
+        release_year,
+        runtime || null,
+        synopsis || null,
+        language || null,
+        country || null,
+        movieId,
+      ]
+    );
+
+    // Delete existing genres and re-insert them
+    await connection.query("DELETE FROM movie_genres WHERE movie_id = ?", [
+      movieId,
+    ]);
+
+    // Insert updated genres
+    if (genres) {
+      const genreValues = Array.isArray(genres) ? genres : [genres];
+
+      for (const genreId of genreValues) {
+        await connection.query(
+          "INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)",
+          [movieId, genreId]
+        );
+      }
+    }
+
+    // Delete existing cast and crew and re-insert them
+    await connection.query("DELETE FROM movie_cast_crew WHERE movie_id = ?", [
+      movieId,
+    ]);
+
+    // Insert updated cast and crew
+    if (req.body["casts[0][person_id]"]) {
+      // Form is submitting flat data structure
+      const castCount = Object.keys(req.body).filter((key) =>
+        key.match(/casts\[\d+\]\[person_id\]/)
+      ).length;
+
+      for (let i = 0; i < castCount; i++) {
+        const personId = req.body[`casts[${i}][person_id]`];
+        const role = req.body[`casts[${i}][role]`];
+        const characterName = req.body[`casts[${i}][character_name]`] || null;
+
+        if (personId && role) {
+          await connection.query(
+            "INSERT INTO movie_cast_crew (movie_id, person_id, character_name, role) VALUES (?, ?, ?, ?)",
+            [movieId, personId, characterName, role]
+          );
+        }
+      }
+    } else if (casts && typeof casts === "object") {
+      // Handle the possibility that casts is an object with numeric keys
+      for (const index in casts) {
+        const cast = casts[index];
+        if (cast.person_id && cast.role) {
+          await connection.query(
+            "INSERT INTO movie_cast_crew (movie_id, person_id, character_name, role) VALUES (?, ?, ?, ?)",
+            [movieId, cast.person_id, cast.character_name || null, cast.role]
+          );
+        }
+      }
+    }
+
+    await connection.commit();
+    res.redirect("/view-movies");
+  } catch (error) {
+    await connection.rollback();
+    console.error(error);
+    res.status(500).send("Error updating movie: " + error.message);
+  } finally {
+    connection.release();
+  }
+});
 
 module.exports = router;
