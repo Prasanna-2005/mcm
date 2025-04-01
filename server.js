@@ -41,7 +41,7 @@ app.use("/genres", genreRoutes);
 app.use("/", movieRoutes);
 app.use('/people', peopleRoutes);
 
-const PORT = process.env.PORT || 5369;
+const PORT = process.env.PORT || 5309;
 app.listen(PORT, () =>
   console.log(`Admin panel running at: http://localhost:${PORT}`)
 );

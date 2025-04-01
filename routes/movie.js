@@ -223,32 +223,37 @@ router.post("/add-movie", isAuthenticated, uploadFiles, async (req, res) => {
 
 
 
-
-// delete movie route
 router.delete("/delete-movie/:id", isAuthenticated, async (req, res) => {
   const connection = await db.getConnection();
 
   try {
     await connection.beginTransaction();
-
     const movieId = req.params.id;
 
-    // Check if movie exists
-    const [movie] = await connection.query(
-      "SELECT * FROM movies WHERE id = ?",
-      [movieId]
-    );
+    // Fetch movie details including image paths
+    const [movie] = await connection.query("SELECT * FROM movies WHERE id = ?", [movieId]);
 
     if (movie.length === 0) {
       await connection.rollback();
       return res.status(404).json({ message: "Movie not found" });
     }
 
-    // Delete the movie (cascade will handle related records)
+    // Define image paths
+    const gridImgPath = path.join(__dirname, `../uploads/grid_images/${movieId}.jpeg`);
+    const posterImgPath = path.join(__dirname, `../uploads/theme_images/${movieId}.jpeg`);
+
+    // Delete image files if they exist
+    [gridImgPath, posterImgPath].forEach((filePath) => {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    });
+
+    // Delete movie record
     await connection.query("DELETE FROM movies WHERE id = ?", [movieId]);
 
     await connection.commit();
-    res.json({ message: "Movie deleted successfully" });
+    res.json({ message: "Movie and images deleted successfully" });
   } catch (error) {
     await connection.rollback();
     console.error(error);
@@ -257,6 +262,7 @@ router.delete("/delete-movie/:id", isAuthenticated, async (req, res) => {
     connection.release();
   }
 });
+
 
 
 
