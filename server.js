@@ -16,6 +16,8 @@ app.use(
 );
 
 // Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -39,7 +41,7 @@ app.use("/genres", genreRoutes);
 app.use("/", movieRoutes);
 app.use('/people', peopleRoutes);
 
-const PORT = process.env.PORT || 5119;
+const PORT = process.env.PORT || 5369;
 app.listen(PORT, () =>
   console.log(`Admin panel running at: http://localhost:${PORT}`)
 );

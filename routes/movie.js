@@ -1,13 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
+const multer = require("multer");
+const path = require("path");
+const fs = require('fs');
 
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function(req, file, cb) {
+      let dest;
+      if (file.fieldname === 'grid_img') {
+        dest = path.join(__dirname, '../../CLIENT/uploads/grid_images');
+      } else {
+        dest = path.join(__dirname, '../../CLIENT/uploads/theme_images');
+      }
+      
+      // Create directory if it doesn't exist
+      if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest, { recursive: true });
+      }
+      
+      cb(null, dest);
+    },
+    filename: function(req, file, cb) {
+      cb(null, req.params.id + path.extname(file.originalname));
+    }
+  })
+});
+
+
+// *******************************************************************************************************************************
 const isAuthenticated = (req, res, next) => {
   if (req.session && req.session.user) {
     return next(); // User is authenticated, proceed
   }
   res.redirect("/login"); // Redirect to login if not authenticated
 };
+// *******************************************************************************************************************************
+
+
 
 router.get("/view-movies", isAuthenticated, async (req, res) => {
   try {
@@ -55,7 +86,6 @@ router.get("/view-movies", isAuthenticated, async (req, res) => {
 
     let moviesList = [];
     for (let [key, value] of movieMap) {
-      console.log(key + " is " + value);
       moviesList.push(value);
     }
 
@@ -68,6 +98,7 @@ router.get("/view-movies", isAuthenticated, async (req, res) => {
     res.status(500).send("Error fetching movies");
   }
 });
+
 
 // separate route for adding movie
 router.get("/add-movie", isAuthenticated, async (req, res) => {
@@ -85,15 +116,21 @@ router.get("/add-movie", isAuthenticated, async (req, res) => {
   }
 });
 
-// post request for adding movie
-router.post("/add-movie", isAuthenticated, async (req, res) => {
-  const connection = await db.getConnection();
 
+
+const uploadFiles = upload.fields([
+  { name: "grid_img", maxCount: 1 },
+  { name: "poster_img", maxCount: 1 },
+]);
+
+// post request for adding movie
+router.post("/add-movie", isAuthenticated, uploadFiles, async (req, res) => {
+  const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
-
     const {
       title,
+      rating,
       release_year,
       runtime,
       synopsis,
@@ -105,13 +142,13 @@ router.post("/add-movie", isAuthenticated, async (req, res) => {
 
     const created_by = req.session.user.id;
 
-    // Insert movie into the movies table
     const [result] = await connection.query(
-      "INSERT INTO movies (title, release_year, runtime, synopsis, language, country, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO movies (title, release_year, runtime,average_rating, synopsis, language, country, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
         title,
         release_year,
         runtime || null,
+        rating||null,
         synopsis || null,
         language || null,
         country || null,
@@ -120,56 +157,62 @@ router.post("/add-movie", isAuthenticated, async (req, res) => {
     );
 
     const movieId = result.insertId;
-
-    // Insert genres into the movie_genres table
-    if (genres) {
-      // Handle both single genre and multiple genres
-      const genreValues = Array.isArray(genres) ? genres : [genres];
-
-      for (const genreId of genreValues) {
-        await connection.query(
-          "INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)",
-          [movieId, genreId]
-        );
-      }
+    if (req.files["grid_img"]) {
+      const gridImgFile = req.files["grid_img"][0];
+      const newGridImgPath = path.join(
+        gridImgFile.destination,
+        `${movieId}${path.extname(gridImgFile.originalname)}`
+      );
+      fs.renameSync(gridImgFile.path, newGridImgPath);
     }
 
-    // Insert casts into the movie_cast_crew table
-    // Check if casts is an array or if it needs to be processed from the form data
-    if (req.body["casts[0][person_id]"]) {
-      // Form is submitting flat data structure
-      const castCount = Object.keys(req.body).filter((key) =>
-        key.match(/casts\[\d+\]\[person_id\]/)
-      ).length;
-
-      for (let i = 0; i < castCount; i++) {
-        const personId = req.body[`casts[${i}][person_id]`];
-        const role = req.body[`casts[${i}][role]`];
-        const characterName = req.body[`casts[${i}][character_name]`] || null;
-
-        if (personId && role) {
-          await connection.query(
-            "INSERT INTO movie_cast_crew (movie_id, person_id, character_name, role) VALUES (?, ?, ?, ?)",
-            [movieId, personId, characterName, role]
-          );
+    if (req.files["poster_img"]) {
+      const posterImgFile = req.files["poster_img"][0];
+      const newPosterImgPath = path.join(
+        posterImgFile.destination,
+        `${movieId}${path.extname(posterImgFile.originalname)}`
+      );
+      fs.renameSync(posterImgFile.path, newPosterImgPath);
+    }
+      if (genres) {
+        const genreValues = Array.isArray(genres) ? genres : [genres];
+        for (const genreId of genreValues) {
+          await connection.query("INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)", [movieId, genreId]);
         }
       }
-    } else if (casts && typeof casts === "object") {
-      // Handle the possibility that casts is an object with numeric keys
-      for (const index in casts) {
-        const cast = casts[index];
-        if (cast.person_id && cast.role) {
-          await connection.query(
-            "INSERT INTO movie_cast_crew (movie_id, person_id, character_name, role) VALUES (?, ?, ?, ?)",
-            [movieId, cast.person_id, cast.character_name || null, cast.role]
-          );
+
+      // Insert casts into the movie_cast_crew table
+      if (req.body["casts[0][person_id]"]) {
+        const castCount = Object.keys(req.body).filter((key) => key.match(/casts\[\d+\]\[person_id\]/)).length;
+        for (let i = 0; i < castCount; i++) {
+          const personId = req.body[`casts[${i}][person_id]`];
+          const role = req.body[`casts[${i}][role]`];
+          const characterName = req.body[`casts[${i}][character_name]`] || null;
+
+          if (personId && role) {
+            await connection.query(
+              "INSERT INTO movie_cast_crew (movie_id, person_id, character_name, role) VALUES (?, ?, ?, ?)",
+              [movieId, personId, characterName, role]
+            );
+          }
+        }
+      } else if (casts && typeof casts === "object") {
+        for (const index in casts) {
+          const cast = casts[index];
+          if (cast.person_id && cast.role) {
+            await connection.query(
+              "INSERT INTO movie_cast_crew (movie_id, person_id, character_name, role) VALUES (?, ?, ?, ?)",
+              [movieId, cast.person_id, cast.character_name || null, cast.role]
+            );
+          }
         }
       }
+
+      await connection.commit();
+      res.redirect("/view-movies");
     }
 
-    await connection.commit();
-    res.redirect("/view-movies");
-  } catch (error) {
+    catch (error) {
     await connection.rollback();
     console.error(error);
     res.status(500).send("Error adding movie: " + error.message);
@@ -177,6 +220,9 @@ router.post("/add-movie", isAuthenticated, async (req, res) => {
     connection.release();
   }
 });
+
+
+
 
 // delete movie route
 router.delete("/delete-movie/:id", isAuthenticated, async (req, res) => {
@@ -211,6 +257,10 @@ router.delete("/delete-movie/:id", isAuthenticated, async (req, res) => {
     connection.release();
   }
 });
+
+
+
+
 
 // Get route for editing a movie
 router.get("/edit-movie/:id", isAuthenticated, async (req, res) => {
@@ -265,8 +315,15 @@ router.get("/edit-movie/:id", isAuthenticated, async (req, res) => {
   }
 });
 
-// Post route for updating a movie
-router.post("/update-movie/:id", isAuthenticated, async (req, res) => {
+
+
+
+
+
+
+// Apply the middleware directly to the route
+router.post("/update-movie/:id", upload.any(), async (req, res) => {
+  
   const connection = await db.getConnection();
 
   try {
@@ -276,6 +333,7 @@ router.post("/update-movie/:id", isAuthenticated, async (req, res) => {
     const {
       title,
       release_year,
+      rating,
       runtime,
       synopsis,
       language,
@@ -283,13 +341,14 @@ router.post("/update-movie/:id", isAuthenticated, async (req, res) => {
       genres,
       casts,
     } = req.body;
-
-    // Update movie in the movies table
+   
+    // Update movie details in the movies table
     await connection.query(
-      "UPDATE movies SET title = ?, release_year = ?, runtime = ?, synopsis = ?, language = ?, country = ? WHERE id = ?",
+      "UPDATE movies SET title = ?, release_year = ?, average_rating = ?, runtime = ?, synopsis = ?, language = ?, country = ? WHERE id = ?",
       [
         title,
         release_year,
+        rating,
         runtime || null,
         synopsis || null,
         language || null,
@@ -299,34 +358,20 @@ router.post("/update-movie/:id", isAuthenticated, async (req, res) => {
     );
 
     // Delete existing genres and re-insert them
-    await connection.query("DELETE FROM movie_genres WHERE movie_id = ?", [
-      movieId,
-    ]);
+    await connection.query("DELETE FROM movie_genres WHERE movie_id = ?", [movieId]);
 
-    // Insert updated genres
     if (genres) {
       const genreValues = Array.isArray(genres) ? genres : [genres];
-
       for (const genreId of genreValues) {
-        await connection.query(
-          "INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)",
-          [movieId, genreId]
-        );
+        await connection.query("INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)", [movieId, genreId]);
       }
     }
 
     // Delete existing cast and crew and re-insert them
-    await connection.query("DELETE FROM movie_cast_crew WHERE movie_id = ?", [
-      movieId,
-    ]);
+    await connection.query("DELETE FROM movie_cast_crew WHERE movie_id = ?", [movieId]);
 
-    // Insert updated cast and crew
     if (req.body["casts[0][person_id]"]) {
-      // Form is submitting flat data structure
-      const castCount = Object.keys(req.body).filter((key) =>
-        key.match(/casts\[\d+\]\[person_id\]/)
-      ).length;
-
+      const castCount = Object.keys(req.body).filter((key) => key.match(/casts\[\d+\]\[person_id\]/)).length;
       for (let i = 0; i < castCount; i++) {
         const personId = req.body[`casts[${i}][person_id]`];
         const role = req.body[`casts[${i}][role]`];
@@ -340,7 +385,6 @@ router.post("/update-movie/:id", isAuthenticated, async (req, res) => {
         }
       }
     } else if (casts && typeof casts === "object") {
-      // Handle the possibility that casts is an object with numeric keys
       for (const index in casts) {
         const cast = casts[index];
         if (cast.person_id && cast.role) {

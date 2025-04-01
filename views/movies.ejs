@@ -1,90 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>View Movies</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      .cell-scrollable {
-        max-width: 200px;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
 
-      .synopsis-cell {
-        max-width: 300px;
-        overflow-x: auto;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Movies</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .cell-scrollable {
+      max-width: 200px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
 
-      .casts-cell {
-        max-width: 250px;
-        overflow-x: auto;
-      }
-    </style>
-  </head>
+    .synopsis-cell {
+      max-width: 300px;
+      overflow-x: auto;
+    }
 
-  <body class="bg-gray-100 min-h-screen">
-    <nav
-      class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg"
-    >
-      <a href="/dashboard" class="text-2xl font-bold">🚀 Admin Dashboard</a>
-      <a href="/logout" class="hover:underline">Logout</a>
-    </nav>
+    .casts-cell {
+      max-width: 250px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
 
-    <div class="max-w-7xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-3xl font-bold text-gray-800">All Movies</h2>
-        <a
-          href="/add-movie"
-          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
-        >
-          Add New Movie
-        </a>
-      </div>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
+    <a href="/dashboard" class="text-2xl font-bold">🚀 Admin Dashboard</a>
+    <a href="/logout" class="hover:underline">Logout</a>
+  </nav>
 
-      <!-- Search Input -->
-      <div class="mt-4 mb-6">
-        <input
-          type="text"
-          id="searchInput"
-          class="border p-2 w-full rounded-md"
-          placeholder="Search by title, language, or country"
-        />
-      </div>
+  <div class="max-w-7xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-gray-800">All Movies</h2>
+      <a href="/add-movie" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
+        Add New Movie
+      </a>
+    </div>
 
-      <!-- Movie Table with Horizontal Scroll -->
-      <div class="overflow-x-auto max-h-[70vh] overflow-y-auto">
-        <table class="w-full border-collapse border border-gray-300">
-          <thead class="sticky top-0">
-            <tr class="bg-gray-200">
-              <th class="border p-2">ID</th>
-              <th class="border p-2 cell-scrollable">Title</th>
-              <th class="border p-2">Release Year</th>
-              <th class="border p-2">Runtime</th>
-              <th class="border p-2 synopsis-cell">Synopsis</th>
-              <th class="border p-2 cell-scrollable">Language</th>
-              <th class="border p-2 cell-scrollable">Country</th>
-              <th class="border p-2">Rating</th>
-              <th class="border p-2 cell-scrollable">Created By</th>
-              <th class="border p-2 cell-scrollable">Genres</th>
-              <th class="border p-2 casts-cell">Casts</th>
-              <th class="border p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="movieTable">
-            <% moviesList.forEach(movie=> { %>
-            <tr
-              class="bg-white border hover:bg-gray-50"
-              data-movie-id="<%= movie.id %>"
-            >
-              <td class="border p-2"><%= movie.id %></td>
+    <!-- Search Input -->
+    <div class="mt-4 mb-6">
+      <input type="text" id="searchInput" class="border p-2 w-full rounded-md"
+        placeholder="Search by title, language, or country" />
+    </div>
+
+    <!-- Movie Table with Horizontal Scroll -->
+    <div class="overflow-x-auto max-h-[70vh] overflow-y-auto">
+      <table class="w-full border-collapse border border-gray-300">
+        <thead class="sticky top-0">
+          <tr class="bg-gray-200">
+            <th class="border p-2">ID</th>
+            <th class="border p-2 cell-scrollable">Title</th>
+            <th class="border p-2">Release Year</th>
+            <th class="border p-2">Runtime</th>
+            <th class="border p-2 synopsis-cell">Synopsis</th>
+            <th class="border p-2 cell-scrollable">Language</th>
+            <th class="border p-2 cell-scrollable">Country</th>
+            <th class="border p-2">Rating</th>
+            <th class="border p-2 cell-scrollable">Created By</th>
+            <th class="border p-2 cell-scrollable">Genres</th>
+            <th class="border p-2 casts-cell">Casts</th>
+            <th class="border p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="movieTable">
+          <% moviesList.forEach(movie=> { %>
+            <tr class="bg-white border hover:bg-gray-50" data-movie-id="<%= movie.id %>">
+              <td class="border p-2">
+                <%= movie.id %>
+              </td>
               <td class="border p-2 font-medium cell-scrollable">
                 <%= movie.title %>
               </td>
-              <td class="border p-2"><%= movie.release_year%></td>
               <td class="border p-2">
-                <%= movie.runtime ? movie.runtime + ' min' : 'N/A' %>
+                <%= movie.release_year%>
+              </td>
+              <td class="border p-2">
+                <%= movie.runtime ? Math.floor(movie.runtime / 60) + ' hr ' + (movie.runtime % 60) + ' min' : 'N/A' %>
               </td>
               <td class="border p-2 synopsis-cell">
                 <div class="line-clamp-2" title="<%= movie.synopsis || '' %>">
@@ -98,132 +91,126 @@
                 <%= movie.country || 'N/A' %>
               </td>
               <td class="border p-2">
-                <% if (movie.average_rating && parseFloat(movie.average_rating)
-                > 0) { %>
-                <span class="px-2 py-1 rounded bg-yellow-500 text-white">
-                  <%= parseFloat(movie.average_rating).toFixed(1) %> ⭐
-                </span>
-                <% } else { %>
-                <span class="text-gray-500">No ratings</span>
-                <% } %>
+                <% if (movie.average_rating && parseFloat(movie.average_rating)> 0) { %>
+                  <span class="px-2 py-1 rounded bg-yellow-500 text-white">
+                    <%= parseFloat(movie.average_rating).toFixed(1) %>
+                  </span>
+                  <% } else { %>
+                    <span class="text-gray-500">No ratings</span>
+                    <% } %>
               </td>
               <td class="border p-2 cell-scrollable">
                 <%= movie.created_by_user || 'N/A' %>
               </td>
               <td class="border p-2 cell-scrollable">
                 <div class="flex flex-wrap gap-1">
-                  <% if (movie.genres && movie.genres.length > 0) { %> <%
-                  movie.genres.forEach(genre => { %>
-                  <span
-                    class="px-2 py-1 rounded bg-blue-600 text-white text-xs whitespace-nowrap"
-                  >
-                    <%= genre %>
-                  </span>
-                  <% }); %> <% } else { %>
-                  <span class="text-gray-500">No genres</span>
-                  <% } %>
+                  <% if (movie.genres && movie.genres.length> 0) { %> <% movie.genres.forEach(genre=> { %>
+                      <span class="px-2 py-1 rounded bg-blue-600 text-white text-xs whitespace-nowrap">
+                        <%= genre %>
+                      </span>
+                      <% }); %>
+                        <% } else { %>
+                          <span class="text-gray-500">No genres</span>
+                          <% } %>
                 </div>
               </td>
               <td class="border p-2 casts-cell">
                 <div class="flex flex-col gap-1">
-                  <% if (movie.casts && movie.casts.length > 0) { %> <%
-                  movie.casts.forEach(cast => { %>
-                  <div
-                    class="px-2 py-1 rounded bg-purple-600 text-white text-xs"
-                  >
-                    <strong><%= cast.person_name || 'Unknown' %></strong>
-                    <% if (cast.role) { %> (<%= cast.role %>) <% } %> <% if
-                    (cast.character_name) { %> as <%= cast.character_name %> <%
-                    } %>
-                  </div>
-                  <% }); %> <% } else { %>
-                  <span class="text-gray-500">No cast info</span>
-                  <% } %>
+                  <% if (movie.casts && movie.casts.length> 0) { %> <% movie.casts.forEach(cast=> { %>
+                      <div class="px-2 py-1 rounded bg-purple-600 text-white text-xs">
+                        <strong>
+                          <%= cast.person_name || 'Unknown' %>
+                        </strong>
+                        <% if (cast.role) { %> (<%= cast.role %>) <% } %>
+                              <% if (cast.character_name) { %> as <%= cast.character_name %>
+                                  <% } %>
+                      </div>
+                      <% }); %>
+                        <% } else { %>
+                          <span class="text-gray-500">No cast info</span>
+                          <% } %>
                 </div>
               </td>
               <td class="border p-2 text-center">
-                <a
-                  href="/edit-movie/<%= movie.id %>"
-                  class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors mr-4"
-                >
+                <a href="/edit-movie/<%= movie.id %>"
+                  class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors mr-4">
                   Edit
                 </a>
-                <button
-                  class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
-                  onclick="confirmDelete(<%= movie.id %>)"
-                >
+                <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
+                  onclick="confirmDelete(<%= movie.id %>)">
                   Delete
                 </button>
               </td>
             </tr>
             <% }); %>
-          </tbody>
-        </table>
-      </div>
+        </tbody>
+      </table>
     </div>
+  </div>
 
-    <script>
-      document
+  <script>
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", filterMovies);
+
+    function filterMovies() {
+      let searchValue = document
         .getElementById("searchInput")
-        .addEventListener("input", filterMovies);
+        .value.toLowerCase();
+      let rows = document.querySelectorAll("#movieTable tr");
 
-      function filterMovies() {
-        let searchValue = document
-          .getElementById("searchInput")
-          .value.toLowerCase();
-        let rows = document.querySelectorAll("#movieTable tr");
+      rows.forEach((row) => {
+        let title = row.children[1].textContent.toLowerCase();
+        let language = row.children[5].textContent.toLowerCase();
+        let country = row.children[6].textContent.toLowerCase();
+        let createdBy = row.children[8].textContent.toLowerCase();
 
-        rows.forEach((row) => {
-          let title = row.children[1].textContent.toLowerCase();
-          let language = row.children[5].textContent.toLowerCase();
-          let country = row.children[6].textContent.toLowerCase();
-          let createdBy = row.children[8].textContent.toLowerCase();
+        let matchesSearch =
+          title.includes(searchValue) ||
+          language.includes(searchValue) ||
+          country.includes(searchValue) ||
+          createdBy.includes(searchValue);
 
-          let matchesSearch =
-            title.includes(searchValue) ||
-            language.includes(searchValue) ||
-            country.includes(searchValue) ||
-            createdBy.includes(searchValue);
+        row.style.display = matchesSearch ? "" : "none";
+      });
+    }
 
-          row.style.display = matchesSearch ? "" : "none";
-        });
+    function confirmDelete(movieId) {
+      if (confirm("Are you sure you want to delete this movie?")) {
+        deleteMovie(movieId);
       }
+    }
 
-      function confirmDelete(movieId) {
-        if (confirm("Are you sure you want to delete this movie?")) {
-          deleteMovie(movieId);
-        }
-      }
-
-      function deleteMovie(movieId) {
-        fetch(`/delete-movie/${movieId}`, {
-          method: "DELETE",
+    function deleteMovie(movieId) {
+      fetch(`/delete-movie/${movieId}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((errorData) => {
+              throw new Error(errorData.message || "Failed to delete movie");
+            });
+          }
+          return response.json();
         })
-          .then((response) => {
-            if (!response.ok) {
-              return response.json().then((errorData) => {
-                throw new Error(errorData.message || "Failed to delete movie");
-              });
-            }
-            return response.json();
-          })
-          .then((data) => {
-            // Remove the row from the table
-            const row = document.querySelector(
-              `tr[data-movie-id="${movieId}"]`
-            );
-            if (row) {
-              row.remove();
-            }
-            alert(data.message || "Movie deleted successfully");
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            alert(
-              error.message || "An error occurred while deleting the movie"
-            );
-          });
-      }
-    </script>
-  </body>
+        .then((data) => {
+          // Remove the row from the table
+          const row = document.querySelector(
+            `tr[data-movie-id="${movieId}"]`
+          );
+          if (row) {
+            row.remove();
+          }
+          alert(data.message || "Movie deleted successfully");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert(
+            error.message || "An error occurred while deleting the movie"
+          );
+        });
+    }
+  </script>
+</body>
+
 </html>

@@ -1,439 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Movie</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
 
-  <body class="bg-gray-100 min-h-screen">
-    <nav
-      class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg"
-    >
-      <a href="/dashboard" class="text-2xl font-bold">🚀 Admin Dashboard</a>
-      <div class="flex space-x-4">
-        <a href="/view-movies" class="hover:underline">View Movies</a>
-        <a href="/logout" class="hover:underline">Logout</a>
-      </div>
-    </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Movie</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md my-10">
-      <h2 class="text-3xl font-bold text-gray-800 mb-6">Edit Movie: <%= movie.title %></h2>
-
-      <form id="movieForm" action="/update-movie/<%= movie.id %>" method="POST">
-        <!-- Movie Basic Details -->
-        <div class="mb-6">
-          <h3 class="text-xl font-semibold text-gray-700 mb-3">
-            Movie Details
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label for="title" class="block text-gray-700 font-medium mb-2"
-                >Movie Title<span class="text-red-500">*</span></label
-              >
-              <input
-                type="text"
-                id="title"
-                name="title"
-                value="<%= movie.title %>"
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label
-                for="release_year"
-                class="block text-gray-700 font-medium mb-2"
-                >Release Year<span class="text-red-500">*</span></label
-              >
-              <input
-                type="number"
-                id="release_year"
-                name="release_year"
-                value="<%= movie.release_year %>"
-                min="1880"
-                max="2099"
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label for="runtime" class="block text-gray-700 font-medium mb-2"
-                >Runtime (minutes)</label
-              >
-              <input
-                type="number"
-                id="runtime"
-                name="runtime"
-                value="<%= movie.runtime || '' %>"
-                min="1"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label for="language" class="block text-gray-700 font-medium mb-2"
-                >Language</label
-              >
-              <input
-                type="text"
-                id="language"
-                name="language"
-                value="<%= movie.language || '' %>"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label for="country" class="block text-gray-700 font-medium mb-2"
-                >Country</label
-              >
-              <input
-                type="text"
-                id="country"
-                name="country"
-                value="<%= movie.country || '' %>"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Synopsis -->
-        <div class="mb-6">
-          <label for="synopsis" class="block text-gray-700 font-medium mb-2"
-            >Synopsis</label
-          >
-          <textarea
-            id="synopsis"
-            name="synopsis"
-            rows="4"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          ><%= movie.synopsis || '' %></textarea>
-        </div>
-
-        <!-- Genres -->
-        <div class="mb-6">
-          <h3 class="text-xl font-semibold text-gray-700 mb-3">
-            Genres<span class="text-red-500">*</span>
-          </h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <% genres.forEach(genre => { %>
-            <div class="flex items-center">
-              <input
-                type="checkbox"
-                id="genre-<%= genre.id %>"
-                name="genres"
-                value="<%= genre.id %>"
-                class="mr-2"
-                <% if (movieGenres.includes(genre.id)) { %>checked<% } %>
-              />
-              <label for="genre-<%= genre.id %>"><%= genre.name %></label>
-            </div>
-            <% }); %>
-          </div>
-        </div>
-
-        <!-- Cast & Crew -->
-        <div class="mb-6">
-          <h3 class="text-xl font-semibold text-gray-700 mb-3">Cast & Crew</h3>
-          <div id="castContainer">
-            <% movieCasts.forEach((cast, index) => { %>
-            <div class="cast-entry bg-gray-50 p-4 rounded mb-3">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-gray-700 font-medium mb-2"
-                    >Person</label
-                  >
-                  <select
-                    name="casts[<%= index %>][person_id]"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select a person</option>
-                    <% people.forEach(person => { %>
-                    <option value="<%= person.id %>" <% if (person.id === cast.person_id) { %>selected<% } %>><%= person.name %></option>
-                    <% }); %>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-gray-700 font-medium mb-2"
-                    >Role</label
-                  >
-                  <select
-                    name="casts[<%= index %>][role]"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 role-select"
-                  >
-                    <option value="actor" <% if (cast.role === 'actor') { %>selected<% } %>>Actor</option>
-                    <option value="actress" <% if (cast.role === 'actress') { %>selected<% } %>>Actress</option>
-                    <option value="director" <% if (cast.role === 'director') { %>selected<% } %>>Director</option>
-                    <option value="writer" <% if (cast.role === 'writer') { %>selected<% } %>>Writer</option>
-                    <option value="producer" <% if (cast.role === 'producer') { %>selected<% } %>>Producer</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-gray-700 font-medium mb-2"
-                    >Character Name</label
-                  >
-                  <input
-                    type="text"
-                    name="casts[<%= index %>][character_name]"
-                    value="<%= cast.character_name || '' %>"
-                    placeholder="<%= (cast.role === 'actor' || cast.role === 'actress') ? 'Character name (required)' : 'Only for actors/actresses' %>"
-                    <%= (cast.role === 'actor' || cast.role === 'actress') ? 'required' : '' %>
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <button
-                type="button"
-                class="remove-cast mt-2 text-red-500 text-sm"
-                <%= movieCasts.length > 1 ? '' : 'style="display: none"' %>
-              >
-                Remove
-              </button>
-            </div>
-            <% }); %>
-
-            <% if (movieCasts.length === 0) { %>
-            <!-- Template cast entry if no casts exist -->
-            <div class="cast-entry bg-gray-50 p-4 rounded mb-3">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-gray-700 font-medium mb-2"
-                    >Person</label
-                  >
-                  <select
-                    name="casts[0][person_id]"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select a person</option>
-                    <% people.forEach(person => { %>
-                    <option value="<%= person.id %>"><%= person.name %></option>
-                    <% }); %>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-gray-700 font-medium mb-2"
-                    >Role</label
-                  >
-                  <select
-                    name="casts[0][role]"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 role-select"
-                  >
-                    <option value="actor">Actor</option>
-                    <option value="actress">Actress</option>
-                    <option value="director">Director</option>
-                    <option value="writer">Writer</option>
-                    <option value="producer">Producer</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-gray-700 font-medium mb-2"
-                    >Character Name</label
-                  >
-                  <input
-                    type="text"
-                    name="casts[0][character_name]"
-                    placeholder="Only for actors/actresses"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <button
-                type="button"
-                class="remove-cast mt-2 text-red-500 text-sm"
-                style="display: none"
-              >
-                Remove
-              </button>
-            </div>
-            <% } %>
-          </div>
-
-          <button
-            type="button"
-            id="addCastBtn"
-            class="mt-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none"
-          >
-            + Add Cast/Crew Member
-          </button>
-        </div>
-
-        <div class="flex space-x-4">
-          <button
-            type="submit"
-            class="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Update Movie
-          </button>
-          <a
-            href="/view-movies"
-            class="w-full bg-gray-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center"
-          >
-            Cancel
-          </a>
-        </div>
-      </form>
+<body class="bg-gray-100 min-h-screen">
+  <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
+    <a href="/dashboard" class="text-2xl font-bold">🚀 Admin Dashboard</a>
+    <div class="flex space-x-4">
+      <a href="/view-movies" class="hover:underline">View Movies</a>
+      <a href="/logout" class="hover:underline">Logout</a>
     </div>
+  </nav>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const castContainer = document.getElementById("castContainer");
-        const addCastBtn = document.getElementById("addCastBtn");
-        let castCount = <%= movieCasts.length || 1 %>;
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md my-10">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Edit Movie: <%= movie.title %>
+    </h2>
 
-        // Show remove button for the first cast entry if there's more than one
-        if (document.querySelectorAll(".cast-entry").length > 1) {
-          document.querySelectorAll(".remove-cast").forEach(btn => {
-            btn.style.display = "inline-block";
-          });
-        }
+    <form id="movieForm" action="/update-movie/<%= movie.id %>" method="POST" enctype="multipart/form-data">
+      <!-- Movie Basic Details -->
+      <div class="mb-6">
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">
+          Movie Details
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="title" class="block text-gray-700 font-medium mb-2">Movie Title<span
+                class="text-red-500">*</span></label>
+            <input type="text" id="title" name="title" value="<%= movie.title %>" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
 
-        addCastBtn.addEventListener("click", function () {
-          // Clone the first cast entry
-          const castEntryTemplate = document
-            .querySelector(".cast-entry")
-            .cloneNode(true);
+          <div>
+            <label for="rating" class="block text-gray-700 font-medium mb-2">Average_Rating<span
+                class="text-red-500">*</span></label>
+            <input type="number" id="rating" name="rating" value="<%= movie.average_rating %>" min="0" max="10"
+              step="0.1" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
 
-          // Update the input names
-          const inputs = castEntryTemplate.querySelectorAll("select, input");
-          inputs.forEach((input) => {
-            const currentName = input.getAttribute("name");
-            const newName = currentName.replace(/\[\d+\]/, `[${castCount}]`);
-            input.setAttribute("name", newName);
+          <div>
+            <label for="release_year" class="block text-gray-700 font-medium mb-2">Release Year<span
+                class="text-red-500">*</span></label>
+            <input type="number" id="release_year" name="release_year" value="<%= movie.release_year %>" min="1880"
+              max="2099" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
 
-            // Clear any values
-            if (input.tagName === "INPUT") {
-              input.value = "";
-            } else if (input.tagName === "SELECT") {
-              input.selectedIndex = 0;
-            }
-          });
+          <div>
+            <label for="runtime" class="block text-gray-700 font-medium mb-2">Runtime (minutes)</label>
+            <input type="number" id="runtime" name="runtime" value="<%= movie.runtime || '' %>" min="1"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
 
-          // Show the remove button
-          const removeBtn = castEntryTemplate.querySelector(".remove-cast");
-          removeBtn.style.display = "inline-block";
+          <div>
+            <label for="language" class="block text-gray-700 font-medium mb-2">Language</label>
+            <input type="text" id="language" name="language" value="<%= movie.language || '' %>"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
 
-          // Add event listener to remove button
-          removeBtn.addEventListener("click", function () {
-            castEntryTemplate.remove();
-            updateCastIndices(); // Update indices after removal
-          });
+          <div>
+            <label for="country" class="block text-gray-700 font-medium mb-2">Country</label>
+            <input type="text" id="country" name="country" value="<%= movie.country || '' %>"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+      </div>
 
-          // Add the new cast entry to the container
-          castContainer.appendChild(castEntryTemplate);
-          castCount++;
+      <!-- Synopsis -->
+      <div class="mb-6">
+        <label for="synopsis" class="block text-gray-700 font-medium mb-2">Synopsis</label>
+        <textarea id="synopsis" name="synopsis" rows="4"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"><%= movie.synopsis || '' %></textarea>
+      </div>
+
+      <!-- Genres -->
+      <div class="mb-6">
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">
+          Genres<span class="text-red-500">*</span>
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <% genres.forEach(genre=> { %>
+            <div class="flex items-center">
+              <input type="checkbox" id="genre-<%= genre.id %>" name="genres" value="<%= genre.id %>" class="mr-2" <% if
+                (movieGenres.includes(genre.id)) { %>checked<% } %>
+                />
+                <label for="genre-<%= genre.id %>">
+                  <%= genre.name %>
+                </label>
+            </div>
+            <% }); %>
+        </div>
+      </div>
+
+      <!-- Cast & Crew -->
+      <div class="mb-6">
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">Cast & Crew</h3>
+        <div id="castContainer">
+          <% movieCasts.forEach((cast, index)=> { %>
+            <div class="cast-entry bg-gray-50 p-4 rounded mb-3">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-gray-700 font-medium mb-2">Person</label>
+                  <select name="casts[<%= index %>][person_id]" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Select a person</option>
+                    <% people.forEach(person=> { %>
+                      <option value="<%= person.id %>" <% if (person.id===cast.person_id) { %>selected<% } %>><%=
+                            person.name %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-gray-700 font-medium mb-2">Role</label>
+                  <select name="casts[<%= index %>][role]" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 role-select">
+                    <option value="actor" <% if (cast.role==='actor' ) { %>selected<% } %>>Actor</option>
+                    <option value="actress" <% if (cast.role==='actress' ) { %>selected<% } %>>Actress</option>
+                    <option value="director" <% if (cast.role==='director' ) { %>selected<% } %>>Director</option>
+                    <option value="writer" <% if (cast.role==='writer' ) { %>selected<% } %>>Writer</option>
+                    <option value="producer" <% if (cast.role==='producer' ) { %>selected<% } %>>Producer</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-gray-700 font-medium mb-2">Character Name</label>
+                  <input type="text" name="casts[<%= index %>][character_name]" value="<%= cast.character_name || '' %>"
+                    placeholder="<%= (cast.role === 'actor' || cast.role === 'actress') ? 'Character name (required)' : 'Only for actors/actresses' %>"
+                    <%=(cast.role==='actor' || cast.role==='actress' ) ? 'required' : '' %>
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2
+                  focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <button type="button" class="remove-cast mt-2 text-red-500 text-sm" <%=movieCasts.length> 1 ? '' :
+                'style="display: none"' %>
+                >
+                Remove
+              </button>
+            </div>
+            <% }); %>
+
+              <% if (movieCasts.length===0) { %>
+                <!-- Template cast entry if no casts exist -->
+                <div class="cast-entry bg-gray-50 p-4 rounded mb-3">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block text-gray-700 font-medium mb-2">Person</label>
+                      <select name="casts[0][person_id]" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select a person</option>
+                        <% people.forEach(person=> { %>
+                          <option value="<%= person.id %>">
+                            <%= person.name %>
+                          </option>
+                          <% }); %>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="block text-gray-700 font-medium mb-2">Role</label>
+                      <select name="casts[0][role]" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 role-select">
+                        <option value="actor">Actor</option>
+                        <option value="actress">Actress</option>
+                        <option value="director">Director</option>
+                        <option value="writer">Writer</option>
+                        <option value="producer">Producer</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="block text-gray-700 font-medium mb-2">Character Name</label>
+                      <input type="text" name="casts[0][character_name]" placeholder="Only for actors/actresses"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                  </div>
+                  <button type="button" class="remove-cast mt-2 text-red-500 text-sm" style="display: none">
+                    Remove
+                  </button>
+                </div>
+                <% } %>
+        </div>
+
+        <button type="button" id="addCastBtn"
+          class="mt-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none">
+          + Add Cast/Crew Member
+        </button>
+
+      </div>
+
+      <div class="mb-6">
+        <label>Grid Image:</label>
+        <input type="file" name="grid_img" accept="image/*" />
+
+        <label>Poster Image:</label>
+        <input type="file" name="poster_img" accept="image/*" />
+      </div>
+
+      <div class="flex space-x-4">
+        <button type="submit"
+          class="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          Update Movie
+        </button>
+        <a href="/view-movies"
+          class="w-full bg-gray-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-center">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const castContainer = document.getElementById("castContainer");
+      const addCastBtn = document.getElementById("addCastBtn");
+      let castCount = <%= movieCasts.length || 1 %>;
+
+      // Show remove button for the first cast entry if there's more than one
+      if (document.querySelectorAll(".cast-entry").length > 1) {
+        document.querySelectorAll(".remove-cast").forEach(btn => {
+          btn.style.display = "inline-block";
         });
+      }
 
-        // Add event listener to the remove buttons
-        document.querySelectorAll(".remove-cast").forEach(button => {
-          button.addEventListener("click", function (e) {
-            if (document.querySelectorAll(".cast-entry").length > 1) {
-              e.target.closest(".cast-entry").remove();
-              updateCastIndices(); // Update indices after removal
-            }
-          });
-        });
+      addCastBtn.addEventListener("click", function () {
+        // Clone the first cast entry
+        const castEntryTemplate = document
+          .querySelector(".cast-entry")
+          .cloneNode(true);
 
-        // Function to update all cast indices after removal
-        function updateCastIndices() {
-          const castEntries = document.querySelectorAll(".cast-entry");
-          castEntries.forEach((entry, index) => {
-            const inputs = entry.querySelectorAll("select, input");
-            inputs.forEach((input) => {
-              const currentName = input.getAttribute("name");
-              const newName = currentName.replace(/\[\d+\]/, `[${index}]`);
-              input.setAttribute("name", newName);
-            });
-          });
-        }
+        // Update the input names
+        const inputs = castEntryTemplate.querySelectorAll("select, input");
+        inputs.forEach((input) => {
+          const currentName = input.getAttribute("name");
+          const newName = currentName.replace(/\[\d+\]/, `[${castCount}]`);
+          input.setAttribute("name", newName);
 
-        // Add change listener for role selection
-        document.addEventListener("change", function (e) {
-          if (e.target.classList.contains('role-select') || 
-              (e.target.name && e.target.name.includes("[role]"))) {
-            // Get the character name input from the same cast entry
-            const castEntry = e.target.closest(".cast-entry");
-            const characterInput = castEntry.querySelector(
-              'input[name$="[character_name]"]'
-            );
-
-            // Only required for actors/actresses
-            if (e.target.value === "actor" || e.target.value === "actress") {
-              characterInput.setAttribute(
-                "placeholder",
-                "Character name (required)"
-              );
-              characterInput.setAttribute("required", "required");
-            } else {
-              characterInput.setAttribute(
-                "placeholder",
-                "Only for actors/actresses"
-              );
-              characterInput.removeAttribute("required");
-              characterInput.value = "";
-            }
+          // Clear any values
+          if (input.tagName === "INPUT") {
+            input.value = "";
+          } else if (input.tagName === "SELECT") {
+            input.selectedIndex = 0;
           }
         });
 
-        // Form validation
-        document
-          .getElementById("movieForm")
-          .addEventListener("submit", function (e) {
-            const genreCheckboxes = document.querySelectorAll(
-              'input[name="genres"]:checked'
+        // Show the remove button
+        const removeBtn = castEntryTemplate.querySelector(".remove-cast");
+        removeBtn.style.display = "inline-block";
+
+        // Add event listener to remove button
+        removeBtn.addEventListener("click", function () {
+          castEntryTemplate.remove();
+          updateCastIndices(); // Update indices after removal
+        });
+
+        // Add the new cast entry to the container
+        castContainer.appendChild(castEntryTemplate);
+        castCount++;
+      });
+
+      // Add event listener to the remove buttons
+      document.querySelectorAll(".remove-cast").forEach(button => {
+        button.addEventListener("click", function (e) {
+          if (document.querySelectorAll(".cast-entry").length > 1) {
+            e.target.closest(".cast-entry").remove();
+            updateCastIndices(); // Update indices after removal
+          }
+        });
+      });
+
+      // Function to update all cast indices after removal
+      function updateCastIndices() {
+        const castEntries = document.querySelectorAll(".cast-entry");
+        castEntries.forEach((entry, index) => {
+          const inputs = entry.querySelectorAll("select, input");
+          inputs.forEach((input) => {
+            const currentName = input.getAttribute("name");
+            const newName = currentName.replace(/\[\d+\]/, `[${index}]`);
+            input.setAttribute("name", newName);
+          });
+        });
+      }
+
+      // Add change listener for role selection
+      document.addEventListener("change", function (e) {
+        if (e.target.classList.contains('role-select') ||
+          (e.target.name && e.target.name.includes("[role]"))) {
+          // Get the character name input from the same cast entry
+          const castEntry = e.target.closest(".cast-entry");
+          const characterInput = castEntry.querySelector(
+            'input[name$="[character_name]"]'
+          );
+
+          // Only required for actors/actresses
+          if (e.target.value === "actor" || e.target.value === "actress") {
+            characterInput.setAttribute(
+              "placeholder",
+              "Character name (required)"
             );
-            if (genreCheckboxes.length === 0) {
-              e.preventDefault();
-              alert("Please select at least one genre");
-              return;
-            }
+            characterInput.setAttribute("required", "required");
+          } else {
+            characterInput.setAttribute(
+              "placeholder",
+              "Only for actors/actresses"
+            );
+            characterInput.removeAttribute("required");
+            characterInput.value = "";
+          }
+        }
+      });
 
-            // Validate at least one cast member
-            const castEntries = document.querySelectorAll(".cast-entry");
-            let validCast = false;
+      // Form validation
+      document
+        .getElementById("movieForm")
+        .addEventListener("submit", function (e) {
+          const genreCheckboxes = document.querySelectorAll(
+            'input[name="genres"]:checked'
+          );
+          if (genreCheckboxes.length === 0) {
+            e.preventDefault();
+            alert("Please select at least one genre");
+            return;
+          }
 
-            castEntries.forEach((entry) => {
-              const personSelect = entry.querySelector(
-                'select[name$="[person_id]"]'
-              );
-              const roleSelect = entry.querySelector('select[name$="[role]"]');
+          // Validate at least one cast member
+          const castEntries = document.querySelectorAll(".cast-entry");
+          let validCast = false;
 
-              if (personSelect.value && roleSelect.value) {
-                // If role is actor/actress, character name is required
-                if (
-                  roleSelect.value === "actor" ||
-                  roleSelect.value === "actress"
-                ) {
-                  const characterInput = entry.querySelector(
-                    'input[name$="[character_name]"]'
-                  );
-                  if (characterInput.value.trim()) {
-                    validCast = true;
-                  }
-                } else {
+          castEntries.forEach((entry) => {
+            const personSelect = entry.querySelector(
+              'select[name$="[person_id]"]'
+            );
+            const roleSelect = entry.querySelector('select[name$="[role]"]');
+
+            if (personSelect.value && roleSelect.value) {
+              // If role is actor/actress, character name is required
+              if (
+                roleSelect.value === "actor" ||
+                roleSelect.value === "actress"
+              ) {
+                const characterInput = entry.querySelector(
+                  'input[name$="[character_name]"]'
+                );
+                if (characterInput.value.trim()) {
                   validCast = true;
                 }
+              } else {
+                validCast = true;
               }
-            });
-
-            if (!validCast) {
-              e.preventDefault();
-              alert("Please add at least one valid cast or crew member");
             }
           });
-      });
-    </script>
-  </body>
+
+          if (!validCast) {
+            e.preventDefault();
+            alert("Please add at least one valid cast or crew member");
+          }
+        });
+    });
+  </script>
+</body>
+
 </html>
