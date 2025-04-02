@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom';
 class Eachmovie extends Component {
     render() {
         const { details } = this.props;
-        const { average_rating, id, imageUrl, isLiked, isWatchlisted, title } = details;
+        const { average_rating, id, posterImageUrl, isLiked, isWatchlisted, title } = details;
 
         return (
             <div className="video-card">
                 <Link to={`/movie/${id}`} className="card-link">
-                    <img src={imageUrl} alt={title} className="thumbnail" />
+                    <img src={posterImageUrl} alt={title} className="thumbnail" />
                     <div className="video-info">
                         <h3 className="title">{title}</h3>
                         <p className="rating">⭐ {average_rating}</p>

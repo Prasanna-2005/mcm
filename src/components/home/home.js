@@ -75,7 +75,7 @@ class Home extends Component {
                 <Navbar className="custom-navbar">
                     <Container fluid>
                         <Navbar.Brand className="cinehive-brand">
-                            <Link to={isLoggedIn ? "/home" : "/"} className="cinehive-link">CineHive</Link>
+                            <Link>CineHive</Link>
                         </Navbar.Brand>
                         <Nav className="ms-auto">
                             <Link to="/profile">
