@@ -4,6 +4,7 @@
     color: white;
     font-family: Arial, sans-serif;
     background-color: #121212;
+    min-height: 100vh;
 }
 
 /* Theme background banner */
@@ -12,18 +13,18 @@
     height: 300px;
     background-size: cover;
     background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.movie-title {
-    font-size: 3rem;
-    font-weight: bold;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 10px;
-    border-radius: 10px;
+.theme-banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, #121212);
 }
 
 /* Main content layout */
@@ -32,81 +33,361 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    gap: 20px;
+    gap: 30px;
+    position: relative;
+    margin-top: -60px;
+    z-index: 2;
 }
 
 /* Movie poster */
 .poster-container {
     flex: 1;
+    max-width: 300px;
 }
 
 .poster-image {
     width: 100%;
-    max-width: 300px;
-    border-radius: 10px;
-    box-shadow: 0px 5px 15px rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Movie information */
 .movie-info {
     flex: 2;
-    background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 10px;
 }
 
 .movie-info h2 {
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.movie-info p {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #e0e0e0;
+}
+
+.movie-info strong {
+    color: #ffffff;
 }
 
 /* Cast & Crew */
+.movie-info h3 {
+    font-size: 1.5rem;
+    margin: 25px 0 15px;
+    color: #ffffff;
+    font-weight: 600;
+}
+
 .cast-list {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .cast-list li {
-    font-size: 1rem;
-    padding: 5px 0;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
 }
 
 /* Synopsis */
 .synopsis {
     font-size: 1.1rem;
     line-height: 1.6;
-    margin-top: 10px;
+    margin: 15px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Like & Watchlist Buttons */
 .actions {
     margin-top: 20px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .like-btn, .watchlist-btn {
-    padding: 10px 15px;
-    font-size: 1rem;
+    padding: 14px 24px;
+    font-size: 1.1rem;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap; /* Prevent text from wrapping */
+    width: auto; /* Allow button to grow as needed */
+    min-width: 120px; /* Minimum width */
+    max-width: 160px; /* Maximum width */
+    overflow: hidden; /* Hide overflow */
 }
 
 .like-btn {
-    background: #ff4d4d;
+    background-color: #ff4d4d;
     color: white;
 }
 
 .watchlist-btn {
-    background: #2b78e4;
+    background-color: #2b78e4;
     color: white;
 }
 
+.review-btn {
+    background-color: #1ed5a9;
+    color: #121212;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(30, 213, 169, 0.3);
+}
+
+.like-btn:hover {
+    background-color: #e63939;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(255, 77, 77, 0.4);
+}
+
+.watchlist-btn:hover {
+    background-color: #2468c5;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(43, 120, 228, 0.4);
+}
+
+.review-btn:hover {
+    background-color: #19b794;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(30, 213, 169, 0.4);
+}
+
 .liked {
-    background: #ff1a1a;
+    background-color: #ff4d4d;
+    color: white;
 }
 
 .watchlisted {
-    background: #1a56db;
+    background-color: #2b78e4;
+    color: white;
+}
+
+/* Review Button */
+.review-btn {
+    background-color: #1ed5a9;
+    color: #121212;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(30, 213, 169, 0.3);
+}
+
+.review-btn:hover {
+    background-color: #19b794;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(30, 213, 169, 0.4);
+}
+
+/* Review Section */
+.review-section {
+    margin-top: 30px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.5s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.review-loader {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+    font-style: italic;
+}
+
+.reviews-list {
+    margin: 20px 0;
+}
+
+.review-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.review-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 0;
+    margin-bottom: 15px;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.review-username {
+    font-weight: bold;
+    color: #1ed5a9;
+}
+
+.review-rating {
+    font-weight: bold;
+    color: #f5c518;
+    background: rgba(245, 197, 24, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.review-content {
+    margin: 0;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+.no-reviews {
+    font-style: italic;
+    color: #888;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.add-review-form {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.add-review-form h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    color: #1ed5a9;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ccc;
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: white;
+    font-size: 0.95rem;
+    font-family: inherit;
+    resize: vertical;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #1ed5a9;
+    box-shadow: 0 0 0 2px rgba(30, 213, 169, 0.2);
+}
+
+.rating-input-group {
+    display: flex;
+    align-items: center;
+}
+
+input[type="number"] {
+    width: 80px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    color: white;
+    font-size: 1rem;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: #1ed5a9;
+}
+
+.rating-helper {
+    margin-left: 8px;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.submit-review-btn {
+    background-color: #1ed5a9;
+    color: #121212;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.submit-review-btn:hover {
+    background-color: #19b794;
+}
+
+.submit-review-btn:disabled {
+    background-color: #1a7c69;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Media queries for better responsiveness */
+@media (max-width: 768px) {
+    .movie-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .poster-container {
+        max-width: 200px;
+        margin-bottom: 20px;
+    }
+    
+    .movie-info {
+        padding: 15px;
+    }
+    
+    .movie-info h2 {
+        font-size: 1.8rem;
+    }
 }

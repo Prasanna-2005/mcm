@@ -1,0 +1,130 @@
+/* Movie grid container */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 6px;
+    padding: 10px;
+    background-color: #f8f8f8;
+}
+
+/* Individual movie card */
+.video-card {
+    position: relative;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 185px;
+    background-color: white;
+}
+
+.video-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Link and thumbnail */
+.card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.thumbnail {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    vertical-align: middle;
+    border-radius: 6px;
+}
+
+/* Make movie info optional - can be hidden with CSS if needed */
+.video-info {
+    padding: 4px;
+}
+
+.title {
+    font-size: 12px;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Action buttons - positioned at bottom of poster */
+.actions {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+}
+
+/* Style the buttons as small icons with rounded rectangles */
+.like-btn, .watchlist-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Style the like button */
+.like-btn {
+    background-color: rgba(255, 100, 100, 0.85);
+}
+
+.like-btn.liked {
+    background-color: rgba(255, 50, 50, 0.9);
+}
+
+/* Style the watchlist button */
+.watchlist-btn {
+    background-color: rgba(70, 130, 255, 0.85);
+}
+
+.watchlist-btn.watchlisted {
+    background-color: rgba(30, 100, 255, 0.9);
+}
+
+/* Optional: Dark mode styling */
+@media (prefers-color-scheme: dark) {
+    .video-grid {
+        background-color: #121212;
+    }
+    
+    .video-card {
+        background-color: #1e1e1e;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .title {
+        color: #eee;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .video-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .video-card {
+        width: 150px;
+    }
+    
+    .like-btn, .watchlist-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+}

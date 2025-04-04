@@ -1,11 +1,22 @@
-import './index.css';
+import './grid.css';
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 class Eachmovie extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isLiked: props.details.isLiked, // Preserve state across refresh
+            isWatchlisted: props.details.isWatchlisted
+        };
+    }
+
+    
+
     render() {
         const { details } = this.props;
-        const { average_rating, id, posterImageUrl, isLiked, isWatchlisted, title } = details;
+        const { id, posterImageUrl, title } = details;
+        const { isLiked, isWatchlisted } = this.state;
 
         return (
             <div className="video-card">
@@ -13,24 +24,10 @@ class Eachmovie extends Component {
                     <img src={posterImageUrl} alt={title} className="thumbnail" />
                     <div className="video-info">
                         <h3 className="title">{title}</h3>
-                        <p className="rating">⭐ {average_rating}</p>
                     </div>
                 </Link>
-                {/* Like & Watchlist Buttons */}
-                <div className="actions">
-                    <button 
-                        className={`like-btn ${isLiked ? 'liked' : ''}`} 
-                        onClick={(e) => e.preventDefault()}
-                    >
-                        {isLiked ? '❤️ Liked' : '🤍 Like'}
-                    </button>
-                    <button 
-                        className={`watchlist-btn ${isWatchlisted ? 'watchlisted' : ''}`} 
-                        onClick={(e) => e.preventDefault()}
-                    >
-                        {isWatchlisted ? '✔️ Watchlisted' : '➕ Watchlist'}
-                    </button>
-                </div>
+                
+                
             </div>
         );
     }
