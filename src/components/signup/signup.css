@@ -1,59 +1,118 @@
-.sign-up-form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-color: #f8f8f8;
+.signup-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+              url('/home/adhish/Desktop/dbms_movie/frontend/public/Vijay_back.jpg') no-repeat center center;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+}
+
+.signup-form-container {
+  background: rgba(255, 255, 255, 0.15); /* Light Glass Effect */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 12px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  padding: 50px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+.signup-title {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-input {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: #f1f1f1;
+  height: 50px;
+  padding: 12px 16px;
+  width: 100%;
+  font-size: 16px;
+  transition: all 0.3s ease-in-out;
+}
+
+.form-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #78c7c7;
+}
+
+.signup-button {
+  background: linear-gradient(45deg, #00c6ff, #0072ff);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 20px 0;
+  padding: 14px;
+  width: 100%;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 15px rgba(0, 214, 255, 0.3);
+}
+
+.signup-button:hover {
+  background: linear-gradient(45deg, #0072ff, #00c6ff);
+  transform: scale(1.02);
+  box-shadow: 0px 6px 20px rgba(0, 214, 255, 0.4);
+}
+
+.error-message {
+  color: #ff6b6b;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.login-link {
+  color: #b0bec5;
+  margin-top: 18px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.login-link a {
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.login-link a:hover {
+  color: #78c7c7;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 740px) {
+  .signup-form-container {
+    margin: 0 20px;
+    padding: 40px 30px;
+    width: auto;
   }
-  
-  .sign-up-image {
-    width: 300px;
-    margin-bottom: 20px;
-  }
-  
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #ffffff;
+}
+
+@media (max-width: 500px) {
+  .signup-container {
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  
-  .sign-up-website-logo-desktop-image {
-    width: 150px;
-    margin-bottom: 20px;
+
+  .signup-form-container {
+    padding: 30px 20px;
   }
-  
-  .input-container {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-  
-  .input-container input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #dcdcdc;
-    border-radius: 4px;
-  }
-  
-  .sign-up-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4caf50;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .sign-up-button:hover {
-    background-color: #45a049;
-  }
-  
-  .error-message {
-    color: red;
-    margin-top: 10px;
-  }
+}

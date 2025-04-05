@@ -9,6 +9,7 @@ class LoginForm extends Component {
     password: '',
     showSubmitError: false,
     errorMsg: '',
+    isLoading: false
   };
 
   onChangeUsername = (event) => {
@@ -21,17 +22,18 @@ class LoginForm extends Component {
 
   onSubmitSuccess = (jwtToken) => {
     Cookies.set('jwt_token', jwtToken, { expires: 30 });
-
     // Redirect to home page
     this.props.navigate('/home');
   };
 
   onSubmitFailure = (errorMsg) => {
-    this.setState({ showSubmitError: true, errorMsg });
+    this.setState({ showSubmitError: true, errorMsg, isLoading: false });
   };
 
   submitForm = async (event) => {
     event.preventDefault();
+    this.setState({ isLoading: true, showSubmitError: false });
+    
     const { username, password } = this.state;
     const email = username;
 
@@ -40,84 +42,99 @@ class LoginForm extends Component {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: 'include', // Important for session authentication
+        credentials: 'include',
       });
 
       const data = await response.json();
-      console.log(data);
-
+      
       if (!response.ok) {
         throw new Error(data.message || 'Invalid credentials');
       }
 
       // Save session data
       localStorage.setItem('user', JSON.stringify(data.user));
-
-      //alert('Login successful!');
       this.onSubmitSuccess(data.token);
     } catch (error) {
-      this.setState({ showSubmitError: true, errorMsg: error.message });
+      this.onSubmitFailure(error.message);
     }
   };
 
-  renderPasswordField = () => {
-    const { password } = this.state;
-    return (
-      <>
-        <label className="input-label" htmlFor="password">
-          PASSWORD
-        </label>
-        <input
-          type="password"
-          id="password"
-          className="password-input-field"
-          value={password}
-          onChange={this.onChangePassword}
-        />
-      </>
-    );
-  };
-
-  renderUsernameField = () => {
-    const { username } = this.state;
-    return (
-      <>
-        <label className="input-label" htmlFor="username">
-          Email
-        </label>
-        <input
-          type="text"
-          id="username"
-          className="username-input-field"
-          value={username}
-          onChange={this.onChangeUsername}
-        />
-      </>
-    );
-  };
-
   render() {
-    const { showSubmitError, errorMsg } = this.state;
+    const { username, password, showSubmitError, errorMsg, isLoading } = this.state;
+    
     return (
-      <div className="login-form-container">
-        <img src="/vijay.png" alt="My Image" />
-        <form className="form-container" onSubmit={this.submitForm}>
-        <h3 className="login-heading">Login</h3>
-
-          <div className="input-container">{this.renderUsernameField()}</div>
-         
-          <div className="input-container">{this.renderPasswordField()}</div>
-          <button type="submit" className="login-button">
-            Login
-          </button>
-          {showSubmitError && <p className="error-message">*{errorMsg}</p>}
-          <p>
-            Don't have an account?
-            <Link to="/signup" className="sign-up-link space">
-              Sign Up
-            </Link>
-          </p>
-        </form>
+      <div className="netflix-login-container">
+        <div className="netflix-header">
+          <div className="netflix-logo">CineHive</div>
+        </div>
+        
+        <div className="netflix-login-form-wrapper">
+          <div className="netflix-login-form">
+            <h1>Sign In</h1>
+            
+            {showSubmitError && (
+              <div className="netflix-error-message">
+                {errorMsg}
+              </div>
+            )}
+            
+            <form onSubmit={this.submitForm}>
+              <div className="netflix-form-group">
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={this.onChangeUsername}
+                  className="netflix-form-input"
+                  placeholder=" "
+                  required
+                />
+                <label htmlFor="username" className="netflix-form-label">Email</label>
+              </div>
+              
+              <div className="netflix-form-group">
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={this.onChangePassword}
+                  className="netflix-form-input"
+                  placeholder=" "
+                  required
+                />
+                <label htmlFor="password" className="netflix-form-label">Password</label>
+              </div>
+              
+              <button 
+                type="submit" 
+                className="netflix-signin-button"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Signing in...' : 'Sign In'}
+              </button>
+            </form>
+            
+            <div className="netflix-signup-now">
+              New to CineHive? <Link to="/signup" className="netflix-signup-link">Sign up now</Link>
+            </div>
+            
+            <div className="netflix-recaptcha-terms">
+              This page is protected by Google reCAPTCHA to ensure you're not a bot.
+            </div>
+          </div>
+        </div>
+        
+        <div className="netflix-footer">
+          <div className="netflix-footer-content">
+            <div className="netflix-footer-top">Questions? Call +91 9344924192</div>
+            <div className="netflix-footer-links">
+              <a >FAQ</a>
+              <a >Help Center</a>
+              <a >Terms of Use</a>
+              <a >Privacy</a>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

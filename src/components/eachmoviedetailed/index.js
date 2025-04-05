@@ -20,7 +20,7 @@ const Eachmoviedetails = () => {
                     method: 'GET',
                     credentials: 'include'
                 });
-                
+               
                 const data = await response.json();
                 console.log("Fetched Movie Data:", data);
                 if (response.ok) {
@@ -98,36 +98,62 @@ const Eachmoviedetails = () => {
         }
     };
 
-    // Toggle Like
-   const toggleLike = async () => {
-    try {
-        const response = await fetch(`http://localhost:5002/movie/toggle-like/${id}`, {
-            method: 'PATCH',
-            credentials: 'include'
+    // Toggle Like with optimistic update
+    const toggleLike = async () => {
+        // Update state immediately for better UX
+        setMovie(prevMovie => {
+            if (!prevMovie) return null;
+            return { ...prevMovie, isliked: !prevMovie.isliked };
         });
 
-        if (response.status === 401) {
-            navigate('/login'); // Redirect if not logged in
-            return;
+        try {
+            const response = await fetch(`http://localhost:5002/movie/toggle-like/${id}`, {
+                method: 'PATCH',
+                credentials: 'include'
+            });
+
+            if (response.status === 401) {
+                // Revert optimistic update on authentication error
+                setMovie(prevMovie => {
+                    if (!prevMovie) return null;
+                    return { ...prevMovie, isliked: !prevMovie.isliked };
+                });
+                navigate('/login'); // Redirect if not logged in
+                return;
+            }
+            if (!response.ok) {
+                // Revert optimistic update on other errors
+                setMovie(prevMovie => {
+                    if (!prevMovie) return null;
+                    return { ...prevMovie, isliked: !prevMovie.isliked };
+                });
+                throw new Error('Failed to toggle like');
+            }
+
+            // Only log the result, state is already updated optimistically
+            const result = await response.json();
+            console.log("Updated Like Data:", result);
+           
+            // For the first fetch only, sync with server state to ensure consistency
+            if (result.isliked !== undefined && movie.isliked !== result.isliked) {
+                setMovie(prevMovie => {
+                    if (!prevMovie) return null;
+                    return { ...prevMovie, isliked: result.isliked };
+                });
+            }
+        } catch (error) {
+            console.error('Error toggling like:', error);
         }
-        if (!response.ok) {
-            throw new Error('Failed to toggle like');
-        }
+    };
 
-        const updatedMovie = await response.json(); // ✅ Get the updated movie object
-        console.log("Updated Like Data:", updatedMovie); // ✅ Check if isliked updates
-
-        setMovie(prevMovie => ({
-            ...prevMovie,
-            isliked: updatedMovie.isliked // ✅ Ensure backend data is used
-        }));
-    } catch (error) {
-        console.error('Error toggling like:', error);
-    }
-};
-
-    // Toggle Watchlist
+    // Toggle Watchlist with optimistic update
     const toggleWatchlist = async () => {
+        // Update state immediately for better UX
+        setMovie(prevMovie => {
+            if (!prevMovie) return null;
+            return { ...prevMovie, isWatchlisted: !prevMovie.isWatchlisted };
+        });
+
         try {
             const response = await fetch(`http://localhost:5002/movie/toggle-watchlist/${id}`, {
                 method: 'PATCH',
@@ -135,17 +161,34 @@ const Eachmoviedetails = () => {
             });
 
             if (response.status === 401) {
+                // Revert optimistic update on authentication error
+                setMovie(prevMovie => {
+                    if (!prevMovie) return null;
+                    return { ...prevMovie, isWatchlisted: !prevMovie.isWatchlisted };
+                });
                 navigate('/login'); // Redirect if not logged in
                 return;
             }
             if (!response.ok) {
+                // Revert optimistic update on other errors
+                setMovie(prevMovie => {
+                    if (!prevMovie) return null;
+                    return { ...prevMovie, isWatchlisted: !prevMovie.isWatchlisted };
+                });
                 throw new Error('Failed to toggle watchlist');
             }
-
-            setMovie(prevMovie => ({
-                ...prevMovie,
-                isWatchlisted: !prevMovie.isWatchlisted // Toggle state
-            }));
+           
+            // Only log the result, state is already updated optimistically
+            const result = await response.json();
+            console.log("Updated Watchlist Data:", result);
+           
+            // For the first fetch only, sync with server state to ensure consistency
+            if (result.isWatchlisted !== undefined && movie.isWatchlisted !== result.isWatchlisted) {
+                setMovie(prevMovie => {
+                    if (!prevMovie) return null;
+                    return { ...prevMovie, isWatchlisted: result.isWatchlisted };
+                });
+            }
         } catch (error) {
             console.error('Error toggling watchlist:', error);
         }
@@ -168,7 +211,7 @@ const Eachmoviedetails = () => {
                     <p>{movie.country} • {movie.language}</p>
                     <p><strong>Genres:</strong> {movie.genres.map(g => g.name).join(", ")}</p>
                     <p className="synopsis">{movie.synopsis}</p>
-                    
+                   
                     <h3>Cast & Crew</h3>
                     <ul className="cast-list">
                         {movie.castCrew.map((person, index) => (
@@ -178,10 +221,10 @@ const Eachmoviedetails = () => {
 
                     <div className="actions">
                         <button className={`like-btn ${movie.isliked ? "liked" : ""}`} onClick={toggleLike}>
-                            {movie.isliked ? "❤️ Liked" : "🤍 Like"}
+                            {movie.isliked ? "❤ Liked" : "🤍 Like"}
                         </button>
                         <button className={`watchlist-btn ${movie.isWatchlisted ? "watchlisted" : ""}`} onClick={toggleWatchlist}>
-                            {movie.isWatchlisted ? "✔️ Watchlisted" : "➕ Watchlist"}
+                            {movie.isWatchlisted ? "✔ Watchlisted" : "➕ Watchlist"}
                         </button>
                     </div>
 

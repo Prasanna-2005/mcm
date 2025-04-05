@@ -1,145 +1,220 @@
-.login-form-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 90%;
-    max-width: 1110px;
-    margin: auto;
+/* Netflix-inspired login styling */
+.netflix-login-container {
+  min-height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+              url('/home/adhish/Desktop/dbms_movie/frontend/public/Vijay_back.jpg') no-repeat center center;
+  background-size: cover;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.netflix-header {
+  padding: 1.5rem 3rem;
+}
+
+.netflix-logo {
+  color: #e50914;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.netflix-login-form-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.netflix-login-form {
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  min-height: 500px;
+  padding: 60px 68px 40px;
+  width: 450px;
+}
+
+.netflix-login-form h1 {
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.netflix-error-message {
+  background-color: #e87c03;
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 16px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.netflix-form-group {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.netflix-form-input {
+  background-color: #333;
+  border: 0;
+  border-radius: 4px;
+  color: white;
+  height: 50px;
+  line-height: 50px;
+  padding: 16px 20px 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.netflix-form-input:focus {
+  outline: none;
+  background-color: #454545;
+}
+
+.netflix-form-input:focus + .netflix-form-label,
+.netflix-form-input:not(:placeholder-shown) + .netflix-form-label {
+  font-size: 11px;
+  top: 7px;
+}
+
+.netflix-form-label {
+  color: #8c8c8c;
+  font-size: 16px;
+  position: absolute;
+  left: 20px;
+  top: 15px;
+  transition: font 0.1s ease, top 0.1s ease;
+  pointer-events: none;
+}
+
+.netflix-signin-button {
+  background-color: #e50914;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  padding: 16px;
+  width: 100%;
+}
+
+.netflix-signin-button:hover {
+  background-color: #f40612;
+}
+
+.netflix-signin-button:disabled {
+  background-color: #8f2228;
+  cursor: not-allowed;
+}
+
+.netflix-signup-now {
+  color: #737373;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 16px;
+}
+
+.netflix-signup-link {
+  color: white;
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.netflix-signup-link:hover {
+  text-decoration: underline;
+}
+
+.netflix-recaptcha-terms {
+  color: #8c8c8c;
+  font-size: 13px;
+  margin-top: 11px;
+}
+
+.netflix-footer {
+  background-color: rgba(0, 0, 0, 0.75);
+  margin-top: auto;
+  padding: 30px 0;
+}
+
+.netflix-footer-content {
+  margin: 0 auto;
+  width: 80%;
+}
+
+.netflix-footer-top {
+  color: #737373;
+  margin-bottom: 30px;
+}
+
+.netflix-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+}
+
+.netflix-footer-links a {
+  color: #737373;
+  flex: 0 0 25%;
+  margin-bottom: 16px;
+  padding: 0 15px;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.netflix-footer-links a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 740px) {
+  .netflix-login-form {
+    margin: 0 20px;
+    min-height: 400px;
+    padding: 40px 30px 30px;
+    width: auto;
   }
   
-  @media screen and (min-width: 992px) {
-    .login-form-container {
-      flex-direction: row;
-      justify-content: space-around;
-    }
+  .netflix-footer-links a {
+    flex: 0 0 33.333333%;
+  }
+}
+
+@media (max-width: 500px) {
+  .netflix-header {
+    padding: 1rem 1.5rem;
   }
   
-  .login-website-logo-mobile-image {
-    width: 165px;
-    margin-top: 50px;
-    margin-bottom: 35px;
+  .netflix-login-form {
+    padding: 30px 20px 20px;
   }
   
-  @media screen and (min-width: 992px) {
-    .login-website-logo-mobile-image {
-      display: none;
-    }
+  .netflix-footer-links a {
+    flex: 0 0 50%;
   }
-  
-  .login-image {
-    width: 278px;
-  }
-  
-  @media screen and (min-width: 992px) {
-    .login-image {
-      width: 60%;
-      max-width: 524px;
-      flex-shrink: 1;
-      margin-right: 20px;
-    }
-  }
-  
-  .login-website-logo-desktop-image {
-    width: 185px;
-  }
-  
-  @media screen and (max-width: 991px) {
-    .login-website-logo-desktop-image {
-      display: none;
-    }
-  }
-  
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 350px;
-  }
-  
-  @media screen and (min-width: 992px) {
-    .form-container {
-      width: 350px;
-      flex-shrink: 0;
-      box-shadow: 0px 8px 40px rgba(7, 7, 7, 0.08);
-      padding: 64px 48px 64px 48px;
-    }
-  }
-  
-  .input-container {
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
-    width: 100%;
-  }
-  
-  .input-label {
-    margin-bottom: 0px;
-    font-family: 'Roboto';
-    font-weight: bold;
-    font-size: 12px;
-    line-height: 16px;
-    color: #475569;
-  }
-  
-  .username-input-field {
-    font-size: 14px;
-    height: 40px;
-    border: 1px solid #d7dfe9;
-    background-color: #e2e8f0;
-    color: #64748b;
-    border-radius: 2px;
-    margin-top: 5px;
-    padding: 8px 16px 8px 16px;
-  }
-  
-  .password-input-field {
-    font-size: 14px;
-    height: 40px;
-    border: 1px solid #d7dfe9;
-    background-color: #e2e8f0;
-    color: #64748b;
-    border-radius: 2px;
-    margin-top: 5px;
-    padding: 8px 16px 8px 16px;
-  }
-  
-  .login-button {
-    font-family: 'Roboto';
-    font-weight: bold;
-    font-size: 14px;
-    color: #ffffff;
-    height: 40px;
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 2px;
-    background-color: #0b69ff;
-    border-radius: 8px;
-    border: none;
-  }
-  
-  .error-message {
-    align-self: start;
-    font-size: 12px;
-    margin-top: 3px;
-    margin-bottom: 0px;
-    font-family: 'Roboto';
-    font-size: 12px;
-    line-height: 16px;
-    color: #ff0b37;
-  }
-  
-  .space{
-    margin-left: 5px;
-  }
-  .login-heading {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #333; /* Adjust color as needed */
+}
+.forgot-password {
+  text-align: right;
+  margin: 10px 0;
+}
+
+.forgot-password-link {
+  color: #b3b3b3;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+  color: white;
 }

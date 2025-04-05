@@ -7,7 +7,8 @@ class Eachmovie extends Component {
         super(props);
         this.state = {
             isLiked: props.details.isLiked, // Preserve state across refresh
-            isWatchlisted: props.details.isWatchlisted
+            isWatchlisted: props.details.isWatchlisted,
+            
         };
     }
 

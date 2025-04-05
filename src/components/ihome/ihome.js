@@ -1,128 +1,83 @@
 import { Component } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Eachmovie from '../eachmoviegrid';
-import { Navbar, Container, Nav, Button, Dropdown } from 'react-bootstrap';
+import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 import './home.css';
 
 class Home extends Component {
     state = { 
-        movies: [], 
-        filter: 'latest', 
-        selectedLanguage: 'English',
-        selectedGenre: 'Action',
         isLoggedIn: false,
         error: null
     };
 
     componentDidMount() {
         this.checkLoginStatus();
-        this.getMovies();
-    }
-
-// For your Home component
-checkLoginStatus = async () => {
-    try {
-        const response = await fetch('http://localhost:5002/auth/profile', {
-            credentials: 'include'
-        });
+        // Add Font Awesome for icons
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js';
+        script.async = true;
+        document.body.appendChild(script);
         
-        // Check if response is OK before trying to parse JSON
-        if (response.ok) {
-            const userData = await response.json();
-            this.setState({ isLoggedIn: true });
-            // Set any other user data you need
-        } else {
-            this.setState({ isLoggedIn: false });
-        }
-    } catch (error) {
-        console.error('Error checking auth status:', error);
-        this.setState({ isLoggedIn: false });
+        // Add Google Fonts
+        const link = document.createElement('link');
+        link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
     }
-};
 
-    getMovies = async () => {
-        let { filter, selectedLanguage, selectedGenre, isLoggedIn } = this.state;
-        let url = 'http://localhost:5002/movie_grid_layout';
-    
-        if (filter === 'top-rated') url = 'http://localhost:5002/movies/top-rated';
-        else if (filter === 'language') url = `http://localhost:5002/movies/lang?language=${selectedLanguage}`;
-        else if (filter === 'genre') url = `http://localhost:5002/movies/genre?genre=${selectedGenre}`;
-        else if (filter === 'liked' || filter === 'watchlisted') {
-            if (!isLoggedIn) return this.setState({ redirectToLogin: true });
-            url = filter === 'liked' ? 'http://localhost:5002/movies/liked' : 'http://localhost:5002/movies/watchlists';
-        }
-    
+    checkLoginStatus = async () => {
         try {
-            const response = await fetch(url, { method: 'GET', credentials: 'include' });
-    
-            if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
-    
-            const data = await response.json();
-            if (data.status === 'success') {
-                // Ensure like/watchlist status is included in movies
-                const updatedMovies = data.data.movies.map(movie => ({
-                    ...movie,
-                    isLiked: movie.isLiked || false,  // Fetch from backend
-                    isWatchlisted: movie.isWatchlisted || false  // Fetch from backend
-                }));
-                this.setState({ movies: updatedMovies, error: null });
+            const response = await fetch('http://localhost:5002/auth/profile', {
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const userData = await response.json();
+                this.setState({ isLoggedIn: true });
             } else {
-                throw new Error(data.message);
+                this.setState({ isLoggedIn: false });
             }
         } catch (error) {
-            console.error('Fetch error:', error);
-            this.setState({ error: 'Failed to fetch movies. Please try again later.' });
+            console.error('Error checking auth status:', error);
+            this.setState({ isLoggedIn: false });
         }
     };
-    
 
     render() {
-        const { movies, filter, selectedLanguage, selectedGenre, error, redirectToLogin } = this.state;
-
-        if (this.state.redirectToLogin) {
-            return <Navigate to="/login" />;
+        // If user is already logged in, show the regular movie grid
+        if (this.state.isLoggedIn) {
+            return <Navigate to="/movies" />;  // Redirect to a movies route
         }
 
         return (
-            <div className="home-container">
+            <div className="welcome-screen">
                 <Navbar className="custom-navbar">
                     <Container fluid>
                         <Navbar.Brand className="cinehive-brand">CineHive</Navbar.Brand>
-                        <Nav className="ms-auto">
-                            <Link to="/login">
-                                <Button variant="danger" className="logout-btn">Login</Button>
-                            </Link>
-                        </Nav>
                     </Container>
                 </Navbar>
 
-                <div className="content-wrapper">
-                    <div className="sidebar">
-                        <ul className="nav-links">
-                            <li className={filter === 'latest' ? 'active' : ''} onClick={() => this.handleFilterChange('latest')}>Home</li>
-                            <li className={filter === 'top-rated' ? 'active' : ''} onClick={() => this.handleFilterChange('top-rated')}>Top Rated</li>
-                            <li className={filter === 'liked' ? 'active' : ''} onClick={() => this.handleFilterChange('liked')}>Liked</li>
-                            <li className={filter === 'watchlisted' ? 'active' : ''} onClick={() => this.handleFilterChange('watchlisted')}>Watchlisted</li>
-                        </ul>
+                <div className="welcome-content">
+                    <div className="welcome-text">
+                        <h1>Track films you've watched.</h1>
+                        <h1>Save those you want to see.</h1>
+                        <h1>Tell your friends what's good.</h1>
+                        <p className="subtitle">Join the community of film enthusiasts today!</p>
                     </div>
-
-                    <div className="main-content">
-                        <div className="search-bar">
-                            <input type="text" placeholder="Search" />
-                        </div>
-
-                        {error && <p className="error-text">{error}</p>}
-
-                        <div className="movies-grid">
-                            {movies.length > 0 ? (
-                                movies.map((eachmovie) => (
-                                    <Eachmovie details={eachmovie} key={eachmovie.id} />
-                                ))
-                            ) : (
-                                !error && <p className="loading-text">Loading movies...</p>
-                            )}
-                        </div>
+                    
+                    <div className="welcome-buttons">
+                        <Link to="/login">
+                            <Button variant="danger" className="welcome-btn login-btn">Login</Button>
+                        </Link>
+                        <Link to="/register">
+                            <Button variant="outline-light" className="welcome-btn register-btn">Join CineHive</Button>
+                        </Link>
+                    </div>
+                    
+                    <p className="social-text">The social network for film lovers.</p>
+                    <div className="platform-icons">
+                        <span className="platform-icon"><i className="fab fa-apple"></i></span>
+                        <span className="platform-icon"><i className="fab fa-android"></i></span>
                     </div>
                 </div>
             </div>

@@ -13,7 +13,9 @@ class Home extends Component {
         selectedGenre: 'Action',
         isLoggedIn: false,
         redirectToLogin: false,
-        error: null
+        error: null,
+        searchQuery: '',
+        allMovies: [] // Store all fetched movies for client-side search
     };
 
     componentDidMount() {
@@ -52,8 +54,13 @@ class Home extends Component {
             const response = await fetch(url, { method: 'GET', credentials: 'include' });
             if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
             const data = await response.json();
+            console.log(data);
             if (data.status === 'success') {
-                this.setState({ movies: data.data.movies, error: null });
+                this.setState({ 
+                    movies: data.data.movies, 
+                    allMovies: data.data.movies, // Store all fetched movies
+                    error: null 
+                });
             } else {
                 throw new Error(data.message);
             }
@@ -63,13 +70,62 @@ class Home extends Component {
         }
     };
 
+    // Handle search input changes
+    handleSearchChange = (e) => {
+        const searchQuery = e.target.value;
+        this.setState({ searchQuery }, this.filterMoviesBySearch);
+    };
+
+    // Filter movies based on search query
+    filterMoviesBySearch = () => {
+        const { searchQuery, allMovies } = this.state;
+        
+        if (!searchQuery.trim()) {
+            // If search query is empty, show all movies
+            this.setState({ movies: allMovies });
+            return;
+        }
+        
+        // Case-insensitive search in title and other relevant fields
+        const filteredMovies = allMovies.filter(movie => {
+            const query = searchQuery.toLowerCase();
+            
+            // Search in title
+            if (movie.title && movie.title.toLowerCase().includes(query)) return true;
+            
+            // Search in genres if available
+            if (movie.genres && Array.isArray(movie.genres)) {
+                const genreMatch = movie.genres.some(genre => 
+                    genre.name && genre.name.toLowerCase().includes(query)
+                );
+                if (genreMatch) return true;
+            }
+            
+            // Search in language
+            if (movie.language && movie.language.toLowerCase().includes(query)) return true;
+            
+            // Search in country
+            if (movie.country && movie.country.toLowerCase().includes(query)) return true;
+            
+            return false;
+        });
+        
+        this.setState({ movies: filteredMovies });
+    };
+
+    // Handle search form submission
+    handleSearchSubmit = (e) => {
+        e.preventDefault();
+        this.filterMoviesBySearch();
+    };
+
     render() {
-        const { movies, filter, selectedLanguage, selectedGenre, error, redirectToLogin, isLoggedIn } = this.state;
+        const { movies, filter, selectedLanguage, selectedGenre, error, redirectToLogin, isLoggedIn, searchQuery } = this.state;
 
         if (redirectToLogin) {
             return <Navigate to="/login" />;
         }
-
+    
         return (
             <div className="home-container">
                 <Navbar className="custom-navbar">
@@ -93,9 +149,6 @@ class Home extends Component {
                         <ul className="nav-links">
                             <li className={filter === 'latest' ? 'active' : ''} onClick={() => this.setState({ filter: 'latest' }, this.getMovies)}>Home</li>
                             <li className={filter === 'top-rated' ? 'active' : ''} onClick={() => this.setState({ filter: 'top-rated' }, this.getMovies)}>Top Rated</li>
-                            <li className={filter === 'liked' ? 'active' : ''} onClick={() => this.setState({ filter: 'liked', redirectToLogin: !this.state.isLoggedIn }, this.getMovies)}>Liked</li>
-                            <li className={filter === 'watchlisted' ? 'active' : ''} onClick={() => this.setState({ filter: 'watchlisted', redirectToLogin: !this.state.isLoggedIn }, this.getMovies)}>Watchlisted</li>
-
                             <Dropdown>
                                 <Dropdown.Toggle variant="light" className="dropdown-btn">
                                     By Language ({selectedLanguage})
@@ -108,26 +161,18 @@ class Home extends Component {
                                     ))}
                                 </Dropdown.Menu>
                             </Dropdown>
-
-                            <Dropdown>
-                                <Dropdown.Toggle variant="light" className="dropdown-btn">
-                                    By Genre ({selectedGenre})
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    {['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi'].map(genre => (
-                                        <Dropdown.Item key={genre} onClick={() => this.setState({ selectedGenre: genre, filter: 'genre' }, this.getMovies)}>
-                                            {genre}
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
                         </ul>
                     </div>
 
                     <div className="main-content">
-                        <div className="search-bar">
-                            <input type="text" placeholder="Search" />
-                        </div>
+                        <form className="search-bar" onSubmit={this.handleSearchSubmit}>
+                            <input 
+                                type="text" 
+                                placeholder="Search by title, genre, language..." 
+                                value={searchQuery}
+                                onChange={this.handleSearchChange}
+                            />
+                        </form>
 
                         {error && <p className="error-text">{error}</p>}
 
@@ -137,7 +182,11 @@ class Home extends Component {
                                     <Eachmovie details={eachmovie} key={eachmovie.id} />
                                 ))
                             ) : (
-                                !error && <p className="loading-text">Loading movies...</p>
+                                !error && searchQuery ? (
+                                    <p className="no-results">No movies found matching "{searchQuery}"</p>
+                                ) : (
+                                    !error && <p className="loading-text">Loading movies...</p>
+                                )
                             )}
                         </div>
                     </div>

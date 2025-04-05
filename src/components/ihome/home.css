@@ -1,99 +1,205 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f9f9f9;
+/* Enhanced styles for home.css */
+
+.welcome-screen {
+    background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.85)), 
+                url('/home/adhish/Desktop/dbms_movie/frontend/public/Vijay_back.jpg') no-repeat center center;
+    background-size: cover;
+    min-height: 100vh;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    position: relative;
 }
 
-/* Navbar - Full Width, Dark Background */
-.custom-navbar {
-    width: 100%;
-    position: fixed;
+/* Add a subtle animated gradient overlay */
+.welcome-screen::after {
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
-    z-index: 1000;
-    background-color: #212529;
-    padding: 10px 20px;
-}
-
-/* CineHive Branding */
-.cinehive-brand {
-    font-size: 22px;
-    font-weight: bold;
-    color: white;
-}
-
-/* Profile Button - White */
-
-
-/* Logout Button - Red */
-.logout-btn {
-    margin-left: 10px;
-    background-color:red;
-    border-color: red;
-}
-
-/* Content Wrapper - Adjusted for Fixed Navbar */
-.content-wrapper {
-    display: flex;
-    margin-top: 56px; /* Adjust margin to avoid overlap with navbar */
-}
-
-/* Sidebar */
-.sidebar {
-    width: 230px;
-    height: 100vh;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.nav-links {
-    list-style: none;
-    padding: 0;
-}
-
-.nav-links li {
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.nav-links li:hover,
-.nav-links .active {
-    background: #eee;
-}
-
-/* Main Content */
-.main-content {
-    flex: 1;
-    padding: 20px;
-}
-
-/* Search Bar */
-.search-bar {
-    margin: 20px 0;
-}
-
-.search-bar input {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.15) 0%, rgba(0, 0, 0, 0) 50%);
+    z-index: 1;
 }
 
-/* Movies Grid */
-.movies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 0px; /* Reduced gap to make movie cards appear closer */
+.custom-navbar {
+    background-color: transparent !important;
+    padding: 1.5rem 0;
+    z-index: 10;
+    position: relative;
 }
 
-.loading-text {
+.cinehive-brand {
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    color: #e50914 !important;
+    text-shadow: 0 2px 10px rgba(229, 9, 20, 0.4);
+    letter-spacing: 1px;
+    padding-left: 1rem;
+}
+
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    font-size: 18px;
-    color: #888;
-    margin-top: 20px;
+    padding-top: 8vh;
+    height: 80vh;
+    z-index: 10;
+    position: relative;
+}
+
+.welcome-text {
+    max-width: 800px;
+    margin-bottom: 3rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+.welcome-text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.8);
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: #f0f0f0;
+    margin: 2.5rem 0;
+    font-weight: 400;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.5px;
+    animation: fadeInUp 1.5s ease-out;
+}
+
+.welcome-buttons {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    animation: fadeInUp 2s ease-out;
+}
+
+.welcome-btn {
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    padding: 0.8rem 2.5rem !important;
+    border-radius: 50px !important;
+    min-width: 160px;
+    transition: all 0.3s ease !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.login-btn {
+    background-color: #e50914 !important;
+    border-color: #e50914 !important;
+}
+
+.login-btn:hover {
+    background-color: #f40612 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(229, 9, 20, 0.4);
+}
+
+.register-btn {
+    background-color: transparent !important;
+    border: 2px solid white !important;
+}
+
+.register-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important; 
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(255, 255, 255, 0.2);
+}
+
+.social-text {
+    font-size: 1.1rem;
+    color: #cccccc;
+    margin-top: 2rem;
+    font-weight: 400;
+    animation: fadeInUp 2.5s ease-out;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Add platform icons */
+.platform-icons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.platform-icon {
+    font-size: 1.5rem;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.platform-icon:hover {
+    opacity: 1;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Floating animation for subtle movement */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .welcome-text h1 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-text h1 {
+        font-size: 2.2rem;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .welcome-buttons {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .cinehive-brand {
+        font-size: 2rem !important;
+    }
+    
+    .welcome-text h1 {
+        font-size: 1.8rem;
+    }
+    
+    .welcome-btn {
+        font-size: 1.1rem !important;
+        padding: 0.7rem 2rem !important;
+    }
 }

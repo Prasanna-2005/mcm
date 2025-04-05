@@ -1,102 +1,351 @@
+/* Enhanced Home.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #e50914;
+  --dark-bg: #141414;
+  --darker-bg: #0b0b0b;
+  --light-text: #f5f5f5;
+  --gray-text: #b3b3b3;
+  --hover-color: #ff0a16;
+  --sidebar-bg: rgba(20, 20, 20, 0.9);
+  --card-bg: rgba(30, 30, 30, 0.8);
+  --card-hover: rgba(40, 40, 40, 0.9);
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f9f9f9;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--darker-bg);
+  color: var(--light-text);
 }
 
-/* Navbar - Full Width, Dark Background */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1f1f1f 100%);
+  position: relative;
+}
+
+/* Add subtle animated background pattern */
+.home-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle, rgba(42, 42, 42, 0.2) 1px, transparent 1px),
+    radial-gradient(circle, rgba(42, 42, 42, 0.15) 1px, transparent 1px);
+  background-size: 30px 30px, 90px 90px;
+  background-position: 0 0, 15px 15px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Navbar Styling */
 .custom-navbar {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    background-color: #212529;
-    padding: 10px 20px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) !important;
+  padding: 1rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
-/* CineHive Branding */
 .cinehive-brand {
-    font-size: 22px;
-    font-weight: bold;
-    color: white;
+  margin: 0;
+  padding: 0;
 }
 
-/* Profile Button - White */
+.cinehive-link {
+  color: var(--primary-color) !important;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(229, 9, 20, 0.4);
+  transition: all 0.3s ease;
+}
+
+.cinehive-link:hover {
+  transform: scale(1.05);
+  text-shadow: 0 2px 15px rgba(229, 9, 20, 0.6);
+}
+
+.profile-btn, .logout-btn {
+  margin-left: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1.2rem;
+  letter-spacing: 0.5px;
+}
+
 .profile-btn {
-    border-color: white;
-    color: white;
+  background-color: transparent;
+  border: 2px solid var(--light-text);
 }
 
-/* Logout Button - Red */
+.profile-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
 .logout-btn {
-    margin-left: 10px;
-    background-color: red;
-    border-color: red;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
-/* Content Wrapper - Adjusted for Fixed Navbar */
+.logout-btn:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+}
+
+/* Content Layout */
 .content-wrapper {
-    display: flex;
-    margin-top: 56px; /* Adjust margin to avoid overlap with navbar */
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+  z-index: 2;
 }
 
-/* Sidebar */
+/* Sidebar Styling */
 .sidebar {
-    width: 230px;
-    height: 100vh;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  width: 240px;
+  background: var(--sidebar-bg);
+  padding: 2rem 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .nav-links {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .nav-links li {
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+  color: var(--gray-text);
 }
 
-.nav-links li:hover,
-.nav-links .active {
-    background: #eee;
+.nav-links li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--light-text);
+  border-left: 3px solid var(--primary-color);
 }
 
-/* Main Content */
+.nav-links li.active {
+  background-color: rgba(229, 9, 20, 0.15);
+  color: var(--light-text);
+  border-left: 3px solid var(--primary-color);
+  font-weight: 600;
+}
+
+.dropdown-btn {
+  width: 100%;
+  text-align: left;
+  background-color: transparent !important;
+  color: var(--gray-text) !important;
+  border: none !important;
+  padding: 1rem 1.5rem !important;
+  margin: 0.5rem 0 !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease;
+}
+
+.dropdown-btn:hover, .dropdown-btn:focus {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--light-text) !important;
+}
+
+.dropdown-menu {
+  background-color: rgba(30, 30, 30, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.dropdown-item {
+  color: var(--gray-text) !important;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(229, 9, 20, 0.2) !important;
+  color: var(--light-text) !important;
+}
+
+/* Main Content Styling */
 .main-content {
-    flex: 1;
-    padding: 20px;
+  flex-grow: 1;
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
 }
 
-/* Search Bar */
 .search-bar {
-    margin: 20px 0;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 500px;
 }
 
 .search-bar input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  width: 100%;
+  padding: 0.75rem 1.2rem;
+  border-radius: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(30, 30, 30, 0.7);
+  color: var(--light-text);
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-/* Movies Grid */
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+  background-color: rgba(30, 30, 30, 0.9);
+}
+
+.search-bar input::placeholder {
+  color: var(--gray-text);
+}
+
+/* Movies Grid Styling */
 .movies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Add animation for movies appearing */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation delay for staggered appearance */
+.movies-grid > div {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.movies-grid > div:nth-child(1) { animation-delay: 0.1s; }
+.movies-grid > div:nth-child(2) { animation-delay: 0.2s; }
+.movies-grid > div:nth-child(3) { animation-delay: 0.3s; }
+.movies-grid > div:nth-child(4) { animation-delay: 0.4s; }
+.movies-grid > div:nth-child(5) { animation-delay: 0.5s; }
+.movies-grid > div:nth-child(6) { animation-delay: 0.6s; }
+.movies-grid > div:nth-child(7) { animation-delay: 0.7s; }
+.movies-grid > div:nth-child(8) { animation-delay: 0.8s; }
+
+/* Error and Loading States */
+.error-text {
+  color: var(--primary-color);
+  font-weight: 500;
+  background-color: rgba(229, 9, 20, 0.1);
+  padding: 1rem;
+  border-radius: 5px;
+  border-left: 4px solid var(--primary-color);
 }
 
 .loading-text {
+  color: var(--gray-text);
+  font-weight: 500;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    order: 2;
+    box-shadow: none;
+    padding: 1rem 0;
+  }
+  
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .nav-links li {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+  }
+  
+  .nav-links li:hover, .nav-links li.active {
+    border-left: none;
+    border-bottom: 2px solid var(--primary-color);
+  }
+  
+  .dropdown-btn {
     text-align: center;
-    font-size: 18px;
-    color: #888;
-    margin-top: 20px;
+    padding: 0.5rem 1rem !important;
+  }
+  
+  .main-content {
+    order: 1;
+    padding: 1rem;
+  }
+  
+  .search-bar {
+    max-width: 100%;
+  }
+  
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .cinehive-link {
+    font-size: 1.5rem;
+  }
+  
+  .profile-btn, .logout-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.8rem;
+  }
 }
