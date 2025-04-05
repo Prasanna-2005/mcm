@@ -126,12 +126,12 @@ class LoginForm extends Component {
         
         <div className="netflix-footer">
           <div className="netflix-footer-content">
-            <div className="netflix-footer-top">Questions? Call +91 9344924192</div>
+            <div className="netflix-footer-top">Questions? Call  +91 9344924192</div>
             <div className="netflix-footer-links">
-              <a >FAQ</a>
-              <a >Help Center</a>
-              <a >Terms of Use</a>
-              <a >Privacy</a>
+              <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0" target='blank'>FAQ</a>
+              <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0" target='blank'>Help Center</a>
+              <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0" target='blank'>Terms of Use</a>
+              <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0" target='blank'>Privacy</a>
             </div>
           </div>
         </div>

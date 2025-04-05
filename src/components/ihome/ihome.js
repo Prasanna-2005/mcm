@@ -46,7 +46,7 @@ class Home extends Component {
     render() {
         // If user is already logged in, show the regular movie grid
         if (this.state.isLoggedIn) {
-            return <Navigate to="/movies" />;  // Redirect to a movies route
+            return <Navigate to="/home" />;  // Redirect to a movies route
         }
 
         return (
@@ -69,7 +69,7 @@ class Home extends Component {
                         <Link to="/login">
                             <Button variant="danger" className="welcome-btn login-btn">Login</Button>
                         </Link>
-                        <Link to="/register">
+                        <Link to="/signup">
                             <Button variant="outline-light" className="welcome-btn register-btn">Join CineHive</Button>
                         </Link>
                     </div>

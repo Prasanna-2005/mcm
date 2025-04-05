@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Eachmovie from '../eachmoviegrid';
 import { Navbar, Container, Nav, Button, Dropdown } from 'react-bootstrap';
 import './home.css';
+import '../eachmoviegrid/grid.css';
 
 class Home extends Component {
     state = { 
@@ -128,11 +129,27 @@ class Home extends Component {
     
         return (
             <div className="home-container">
-                <Navbar className="custom-navbar">
+                <Navbar className="custom-navbar sticky-navbar" expand="lg">
                     <Container fluid>
                         <Navbar.Brand className="cinehive-brand">
                             <p className="cinehive-link">CineHive</p>
                         </Navbar.Brand>
+                        
+                        <form className="navbar-search-form" onSubmit={this.handleSearchSubmit}>
+                            <div className="search-input-container">
+                                <input 
+                                    type="text" 
+                                    placeholder="Search..."
+                                    value={searchQuery}
+                                    onChange={this.handleSearchChange}
+                                    className="navbar-search-input"
+                                />
+                                <button type="submit" className="search-icon-button">
+                                    <i className="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        
                         <Nav className="ms-auto">
                             <Link to="/profile">
                                 <Button variant="outline-light" className="profile-btn">Profile</Button>
@@ -165,15 +182,6 @@ class Home extends Component {
                     </div>
 
                     <div className="main-content">
-                        <form className="search-bar" onSubmit={this.handleSearchSubmit}>
-                            <input 
-                                type="text" 
-                                placeholder="Search by title, genre, language..." 
-                                value={searchQuery}
-                                onChange={this.handleSearchChange}
-                            />
-                        </form>
-
                         {error && <p className="error-text">{error}</p>}
 
                         <div className="movies-grid">

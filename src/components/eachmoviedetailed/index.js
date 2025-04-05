@@ -194,6 +194,11 @@ const Eachmoviedetails = () => {
         }
     };
 
+    // Handle rating selection
+    const handleRatingSelect = (rating) => {
+        setReviewRating(rating);
+    };
+
     if (!movie) {
         return <div className="loading">Loading...</div>;
     }
@@ -264,15 +269,33 @@ const Eachmoviedetails = () => {
                                     value={reviewContent}
                                     onChange={(e) => setReviewContent(e.target.value)}
                                 ></textarea>
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max="10"
-                                    placeholder="Rating (1-10)"
-                                    value={reviewRating}
-                                    onChange={(e) => setReviewRating(e.target.value)}
-                                />
-                                <button onClick={submitReview} disabled={isLoading}>
+                                
+                                <div className="rating-container">
+                                    <div className="rating-label">Rating: {reviewRating ? `${reviewRating}/10` : 'Select a rating'}</div>
+                                    <div className="rating-input-slider">
+                                        <input
+                                            type="range"
+                                            min="1"
+                                            max="10"
+                                            value={reviewRating}
+                                            onChange={(e) => setReviewRating(e.target.value)}
+                                            className="rating-slider"
+                                        />
+                                    </div>
+                                    <div className="rating-values">
+                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                                            <span 
+                                                key={num} 
+                                                className={`rating-value ${parseInt(reviewRating) === num ? 'active' : ''}`}
+                                                onClick={() => handleRatingSelect(num)}
+                                            >
+                                                {num}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                                
+                                <button className="submit-review-btn" onClick={submitReview} disabled={isLoading}>
                                     {isLoading ? "Submitting..." : "Submit Review"}
                                 </button>
                             </div>
